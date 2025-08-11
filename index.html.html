@@ -1,0 +1,688 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <style>
+#modalForm {
+  display: none;
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+  font-family: Arial, sans-serif;
+}
+
+#modalForm > div {
+  background: #fff;
+  max-width: 400px;
+  margin: 50px auto;
+  padding: 20px;
+  border-radius: 8px;
+  position: relative;
+  color: #000;
+}
+
+#modalForm label {
+  font-weight: bold;
+  color: #000;
+}
+
+#modalForm input[type="email"],
+#modalForm input[type="tel"],
+#modalForm textarea {
+  width: 100%;
+  padding: 8px;
+  margin-top: 5px;
+  margin-bottom: 15px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  color: #000;
+  background: #fff;
+  box-sizing: border-box;
+  font-size: 14px;
+}
+
+#modalForm button {
+  padding: 10px 15px;
+  border: none;
+  border-radius: 4px;
+  background-color: #0070ba;
+  color: white;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+#modalForm button#btnClose {
+  background-color: #aaa;
+}
+
+#modalForm button:hover {
+  opacity: 0.9;
+}
+</style>
+
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>ZiiLoW Esport </title>
+<style>
+
+  body {
+  padding-bottom: 50px; /* pour laisser la place au footer */
+}
+
+footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 50px;
+  background-color: #111;
+  color: #ccc;
+  text-align: center;
+  line-height: 50px;
+  font-size: 14px;
+  z-index: 1000;
+}
+
+body {
+  margin: 0; padding: 0;
+  font-family: Arial, sans-serif;
+  color: #eee;
+  background: #000;
+  position: relative;
+  overflow: hidden;
+  z-index: 0;
+}
+
+body::before {
+  content: "";
+  position: fixed; /* fixe pour couvrir toute la page */
+  top: 0;
+  left: -50%;
+  width: 200%;
+  height: 100vh;
+  background: linear-gradient(90deg, rgba(255,255,255,0.15), rgba(0, 120, 255, 0.7), rgba(255,255,255,0.15));
+  filter: blur(80px);
+  animation: glowMove 6s linear infinite;
+  z-index: -1;
+}
+
+@keyframes glowMove {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+
+  nav {
+    background:#1e1e1e;
+    padding:15px;
+    display:flex;
+    justify-content: space-between;
+    align-items: center;
+    font-weight:bold;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+  }
+
+  nav .nav-links {
+    display: flex;
+    gap: 30px;
+  }
+  nav a {
+    color:#00bfff;
+    text-decoration:none;
+    font-size: 1.1rem;
+    cursor:pointer;
+  }
+  nav a:hover, nav a.active {
+    text-decoration: underline;
+  }
+  header h1 {
+    text-align:center;
+    padding: 20px;
+    color:#00bfff;
+    margin: 0;
+  }
+  section {
+    padding: 20px;
+    max-width: 900px;
+    margin: auto;
+    display: none;
+  }
+  section.active {
+    display: block;
+  }
+  h2 {
+    border-bottom: 2px solid #00bfff;
+    padding-bottom: 10px;
+    margin-bottom: 20px;
+  }
+  ul {
+    list-style: none;
+    padding-left: 0;
+  }
+  ul li {
+    margin: 10px 0;
+    font-size: 1.1rem;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .produits {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .produit {
+    background: #222;
+    padding: 15px;
+    border-radius: 8px;
+    width: 250px;
+    box-shadow: 0 0 8px #00bfff80;
+    text-align: center;
+  }
+  .produit img {
+    max-width: 100%;
+    border-radius: 6px;
+  }
+  .produit h3 {
+    margin: 10px 0 5px 0;
+    color: #00bfff;
+  }
+  .produit p {
+    font-size: 0.9rem;
+    margin-bottom: 15px;
+  }
+  .produit button, .produit form button {
+    background-color: #00bfff;
+    border: none;
+    color: #121212;
+    padding: 10px 15px;
+    font-weight: bold;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  .produit button:hover, .produit form button:hover {
+    background-color: #008fcf;
+  }
+  .contact-list {
+    font-size: 1.1rem;
+    margin-bottom: 20px;
+  }
+  .contact-list li {
+    margin-bottom: 10px;
+  }
+  .discord-link {
+    display: inline-block;
+    vertical-align: middle;
+  }
+  .discord-link img {
+    width: 40px;
+    height: 40px;
+    cursor: pointer;
+    filter: brightness(0) invert(1);
+    transition: filter 0.3s ease;
+  }
+  .discord-link img:hover {
+    filter: brightness(0) invert(0.6) drop-shadow(0 0 5px #00bfff);
+  }
+  /* Icônes réseaux dans la section Nos réseaux */
+  .social-link {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #00bfff;
+    text-decoration: none;
+    font-weight: bold;
+    margin-bottom: 12px;
+  }
+  .social-link img {
+    width: 28px;
+    height: 28px;
+    filter: brightness(0) invert(1);
+    transition: filter 0.3s ease;
+  }
+  .social-link:hover img {
+    filter: brightness(0) invert(0.6) drop-shadow(0 0 5px #00bfff);
+  }
+  footer {
+    background-color: #1e1e1e;
+    padding: 15px;
+    text-align: center;
+    color: #777;
+    margin-top: 40px;
+    font-size: 0.9rem;
+  }
+
+  /* Styles pour la popup de connexion / inscription */
+  #loginPopup {
+    position: fixed;
+    top: 50%;
+    right: 20px;
+    transform: translateY(-50%);
+    background: #222;
+    border: 2px solid #00bfff;
+    border-radius: 8px;
+    padding: 20px;
+    width: 300px;
+    color: #eee;
+    display: none;
+    z-index: 2000;
+  }
+  #loginPopup h2 {
+    margin-top: 0;
+    color: #00bfff;
+  }
+  #loginPopup label {
+    display: block;
+    margin-top: 10px;
+  }
+  #loginPopup input[type="email"],
+  #loginPopup input[type="password"] {
+    width: 100%;
+    padding: 8px;
+    margin-top: 5px;
+    border-radius: 4px;
+    border: none;
+  }
+  #loginPopup button {
+    margin-top: 15px;
+    width: 100%;
+    background-color: #00bfff;
+    border: none;
+    color: #121212;
+    padding: 10px;
+    font-weight: bold;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  #loginPopup button:hover {
+    background-color: #008fcf;
+  }
+  #loginPopup .close-btn {
+    position: absolute;
+    top: 5px;
+    right: 10px;
+    cursor: pointer;
+    font-weight: bold;
+    color: #00bfff;
+  }
+  #loginPopup a {
+    color: #00bfff;
+    font-size: 0.9rem;
+    cursor: pointer;
+    text-decoration: underline;
+    display: inline-block;
+    margin-top: 10px;
+  }
+</style>
+<script>
+  function showSection(sectionId, element) {
+    document.querySelectorAll('section').forEach(sec => sec.classList.remove('active'));
+    document.getElementById(sectionId).classList.add('active');
+
+    document.querySelectorAll('nav a').forEach(a => a.classList.remove('active'));
+    element.classList.add('active');
+
+    window.scrollTo({top:0, behavior:'smooth'});
+
+    // Fermer la popup connexion si ouverte
+    hideLoginPopup();
+  }
+
+  window.onload = () => {
+    const defaultLink = document.querySelector('nav .nav-links a');
+    if(defaultLink) {
+      defaultLink.click();
+    }
+  };
+
+  function toggleLoginPopup() {
+    const popup = document.getElementById('loginPopup');
+    if(popup.style.display === 'block') {
+      popup.style.display = 'none';
+    } else {
+      popup.style.display = 'block';
+    }
+  }
+
+  function hideLoginPopup() {
+    document.getElementById('loginPopup').style.display = 'none';
+  }
+
+function forgotPassword() {
+  // Cacher toutes les sections principales et la popup
+  document.querySelectorAll('section').forEach(sec => sec.classList.remove('active'));
+  hideLoginPopup();
+
+  // Afficher la page de réinitialisation
+  document.getElementById('forgotPasswordPage').style.display = 'block';
+
+  // Scroll en haut
+  window.scrollTo({top: 0, behavior: 'smooth'});
+}
+
+  function submitLogin(event) {
+    event.preventDefault();
+    const email = document.getElementById('email').value;
+    const password = document.getElementById('password').value;
+    alert(`Connexion effectuée pour ${email} (fonction fictive).`);
+    hideLoginPopup();
+  }
+
+  function showRegisterForm() {
+    document.getElementById('loginForm').style.display = 'none';
+    document.getElementById('registerForm').style.display = 'block';
+  }
+
+  function showLoginForm() {
+    document.getElementById('registerForm').style.display = 'none';
+    document.getElementById('loginForm').style.display = 'block';
+  }
+
+  function submitRegister(event) {
+    event.preventDefault();
+
+    const email = document.getElementById('regEmail').value;
+    const password = document.getElementById('regPassword').value;
+    const confirmPassword = document.getElementById('regPasswordConfirm').value;
+
+    if(password !== confirmPassword) {
+      alert("Les mots de passe ne correspondent pas.");
+      return;
+    }
+
+    alert("Compte créé avec succès (fonction fictive). Vous pouvez maintenant vous connecter.");
+    showLoginForm();
+  }
+</script>
+</head>
+<body>
+
+<header>
+  <nav>
+    <div class="nav-links">
+      <a href="#" onclick="showSection('apropos', this); return false;">À propos</a>
+      <a href="#" onclick="showSection('boutique', this); return false;">Boutique</a>
+      <a href="#" onclick="showSection('contact', this); return false;">Contact</a>
+      <a href="#" onclick="showSection('reseaux', this); return false;">Nos réseaux</a>
+      <a href="#" onclick="showSection('partenariats', this); return false;">Partenariats</a>
+      <a href="#" onclick="showSection('recrutement', this); return false;">Recrutement</a>
+      <a href="#" onclick="showSection('avis client', this); return false;">Avis client</a>
+      
+    </div>
+    <a href="#" class="login-button" onclick="toggleLoginPopup(); return false;">Se connecter</a>
+
+  </nav>
+  <h1>ZiiLoW Esport</h1>
+</header>
+
+<section id="apropos">
+  <h2>À propos de notre équipe eSport</h2>
+  <p>
+
+Fondée en juillet 2024, notre équipe eSport est née d’une passion commune pour la compétition et l’excellence, avec un premier focus sur le jeu Call of Duty. Depuis sa création, notre ambition est claire : faire grandir l’équipe pour atteindre les plus hauts niveaux de compétition et s’imposer comme une référence incontournable dans le paysage eSportif.
+
+Nous misons sur un esprit d’équipe solide, une discipline rigoureuse et une volonté constante d’amélioration. Chaque membre apporte son talent et son engagement, contribuant à bâtir une structure professionnelle, dynamique et tournée vers la réussite.
+
+Au-delà de la compétition, nous souhaitons aussi construire une communauté engagée et fidèle, en partageant nos valeurs de fair-play, de respect et de dépassement de soi.
+
+Notre objectif : propulser notre équipe sur la scène nationale et internationale, gagner en visibilité et devenir un acteur majeur de l’eSport, tout en offrant à nos joueurs un environnement propice à leur épanouissement et à leur progression.
+
+Rejoignez-nous dans cette aventure ambitieuse, car ensemble, nous allons écrire l’avenir de l’eSport.
+  </p>
+</section>
+
+<section id="boutique">
+  <h2>Boutique</h2>
+  <div class="produits">
+
+    <div class="produit">
+      <h3>Maillot ZiiLoW</h3>
+      <img src="https://via.placeholder.com/250x250?text=Maillot+ZiiLoW" alt="Maillot ZiiLoW Esport" />
+      <p>Maillot officiel de l'équipe ZiiLoW Esport, disponible en toutes tailles.</p>
+      <button class="btnPayer" data-prix="90">Payer 90 € avec PayPal</button>
+    </div>
+
+    <div class="produit">
+      <h3>Coque de téléphone ZiiLoW</h3>
+      <img src="https://via.placeholder.com/250x250?text=Coque+ZiiLoW" alt="Coque ZiiLoW Esport" />
+      <p>Coque de téléphone résistante et design ZiiLoW, compatible avec plusieurs modèles.</p>
+      <button class="btnPayer" data-prix="45">Payer 45 € avec PayPal</button>
+    </div>
+
+  </div>
+
+  <div id="confirmationPaiement" style="display:none; margin-top:20px;">
+    <h3>Merci pour votre paiement !</h3>
+    <p>Pour recevoir votre bon de commande, entrez votre email :</p>
+    <input type="email" id="emailConf" placeholder="Votre email" required />
+    <button id="btnGenererBon">Obtenir mon bon de commande</button>
+  </div>
+
+  <div id="bonCommande" style="display:none; margin-top:20px;">
+    <h3>Bon de commande</h3>
+    <p>Merci pour votre achat.</p>
+    <p>Numéro de commande : <span id="numCommande"></span></p>
+    <p>Conservez ce numéro et contactez-nous sur Discord pour valider votre commande.</p>
+    <p>Merci de bien vouloir nous fournir votre nom, prénom, adresse email, numéro de téléphone et adresse postale afin que nous puissions expédier votre commande. Vous aurez également la possibilité de choisir le nom qui sera inscrit sur le produit acheté au moment de la livraison.</p>
+  </div>
+</section>
+
+<script>
+  const btnPayers = document.querySelectorAll('.btnPayer');
+  const confirmationPaiement = document.getElementById('confirmationPaiement');
+  const bonCommande = document.getElementById('bonCommande');
+  const btnGenererBon = document.getElementById('btnGenererBon');
+  const numCommandeSpan = document.getElementById('numCommande');
+  const emailConf = document.getElementById('emailConf');
+
+  btnPayers.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const prix = btn.getAttribute('data-prix');
+      // Ouvre PayPal dans un nouvel onglet avec le prix correspondant
+      window.open(`https://www.paypal.me/ziilowesport/${prix}`, '_blank');
+      // Affiche la section confirmation paiement
+      confirmationPaiement.style.display = 'block';
+      bonCommande.style.display = 'none';
+      emailConf.value = ''; // reset input email
+    });
+  });
+
+  btnGenererBon.addEventListener('click', () => {
+    if (!emailConf.value.trim()) {
+      alert("Merci de saisir votre email.");
+      return;
+    }
+    // Génération d'un numéro de commande aléatoire
+    const orderNumber = Math.floor(100000 + Math.random() * 900000);
+    numCommandeSpan.textContent = orderNumber;
+    confirmationPaiement.style.display = 'none';
+    bonCommande.style.display = 'block';
+
+    console.log("Email client:", emailConf.value);
+  });
+</script>
+
+  </div>
+</section>
+
+<section id="contact">
+  <h2>Contact</h2>
+  <ul class="contact-list">
+    <li>Email principal : <a href="mailto:ziilowgaming10@gmail.com" style="color:#00bfff;">ziilowgaming10@gmail.com</a></li>
+  </ul>
+  <p>
+    Rejoignez-nous aussi sur Discord : 
+    <a href="https://discord.gg/XHQebk4SwQ" target="_blank" rel="noopener noreferrer" class="discord-link" title="Rejoindre Discord ZiiLoW Esport">
+      <img src="https://cdn-icons-png.flaticon.com/512/2111/2111370.png" alt="Discord" />
+    </a>
+  </p>
+</section>
+
+<section id="reseaux">
+  <h2>Nos réseaux</h2>
+  <a href="https://discord.gg/XHQebk4SwQ" target="_blank" rel="noopener noreferrer" class="social-link" title="Discord">
+    <img src="https://cdn-icons-png.flaticon.com/512/2111/2111370.png" alt="Discord" />
+    Discord
+  </a><br/>
+  <a href="https://www.instagram.com/ziilowesport" target="_blank" rel="noopener noreferrer" class="social-link" title="Instagram">
+    <img src="https://cdn-icons-png.flaticon.com/512/174/174855.png" alt="Instagram" />
+    Instagram
+  </a><br/>
+  <a href="https://twitter.com/ziilowesport" target="_blank" rel="noopener noreferrer" class="social-link" title="Twitter">
+    <img src="https://cdn-icons-png.flaticon.com/512/733/733579.png" alt="Twitter" />
+    Twitter
+  </a><br/>
+  <a href="https://www.tiktok.com/@ziilowesport?_t=ZN-8ymeG8ID6U2&_r=1" target="_blank" rel="noopener noreferrer" class="social-link" title="TikTok">
+    <img src="https://cdn-icons-png.flaticon.com/512/3046/3046126.png" alt="TikTok" />
+    TikTok
+  </a>
+</section>
+
+
+</section> <!-- fin Nos réseaux -->
+
+<section id="partenariats">
+  <h2>Nos Partenaires</h2>
+  <div class="produits">
+    <div class="produit">
+      <img src="https://via.placeholder.com/250x250?text=Partenaire+1" alt="Logo Partenaire 1" />
+      <h3>Partenaire 1</h3>
+      <p>Description rapide de ce partenaire.</p>
+      <a href="https://site-partenaire1.com" target="_blank">
+        <button>Visiter le site</button>
+      </a>
+    </div>
+    <div class="produit">
+      <img src="https://via.placeholder.com/250x250?text=Partenaire+2" alt="Logo Partenaire 2" />
+      <h3>Partenaire 2</h3>
+      <p>Description rapide de ce partenaire.</p>
+      <a href="https://site-partenaire2.com" target="_blank">
+        <button>Visiter le site</button>
+      </a>
+    </div>
+  </div>
+</section>
+
+
+
+
+<!-- Popup Connexion / Inscription -->
+<div id="loginPopup">
+  <span class="close-btn" onclick="hideLoginPopup()">×</span>
+
+  <div id="loginForm">
+    <h2>Se connecter</h2>
+    <form onsubmit="submitLogin(event)">
+      <label for="email">Email :</label>
+      <input type="email" id="email" required placeholder="exemple@mail.com" />
+      
+      <label for="password">Mot de passe :</label>
+      <input type="password" id="password" required placeholder="Votre mot de passe" />
+      
+      <button type="submit">Connexion</button>
+    </form>
+    <a href="#" onclick="forgotPassword(); return false;">Mot de passe oublié ?</a><br/>
+    <a href="#" onclick="showRegisterForm(); return false;">Pas encore de compte ? Inscrivez-vous</a>
+  </div>
+
+  <div id="registerForm" style="display:none;">
+    <h2>S'inscrire</h2>
+    <form onsubmit="submitRegister(event)">
+      <label for="regEmail">Email :</label>
+      <input type="email" id="regEmail" required placeholder="exemple@mail.com" />
+      
+      <label for="regPassword">Mot de passe :</label>
+      <input type="password" id="regPassword" required placeholder="Votre mot de passe" />
+      
+      <label for="regPasswordConfirm">Confirmer le mot de passe :</label>
+      <input type="password" id="regPasswordConfirm" required placeholder="Confirmez le mot de passe" />
+      
+      <button type="submit">Créer un compte</button>
+    </form>
+    <a href="#" onclick="showLoginForm(); return false;">Déjà un compte ? Connectez-vous</a>
+  </div>
+</div>
+
+<section id="forgotPasswordPage" style="display:none; max-width: 500px; margin: 40px auto; background: #222; padding: 20px; border-radius: 8px; box-shadow: 0 0 8px #00bfff80; color: #eee;">
+  <h2>Réinitialisation du mot de passe</h2>
+  <p>Entrez votre email pour recevoir un code de réinitialisation :</p>
+  <form id="forgotPasswordForm" onsubmit="submitForgotPasswordPage(event)">
+    <input type="email" id="forgotEmailPage" required placeholder="exemple@mail.com" style="width:100%; padding:8px; margin-bottom:15px; border-radius:4px; border:none;" />
+    <button type="submit" style="background:#00bfff; border:none; padding:10px 15px; color:#121212; font-weight:bold; border-radius:5px; cursor:pointer; width:100%;">Envoyer le code</button>
+  </form>
+  <button onclick="returnToHome()" style="margin-top: 15px; background:#008fcf; border:none; padding:8px 12px; color:#eee; font-weight:bold; border-radius:5px; cursor:pointer;">Retour</button>
+</section>
+
+
+
+<footer>
+  &copy; 2025 ZiiLoW Esport. Tous droits réservés.
+</footer>
+
+
+</body>
+</html>
+
+
+<section id="recrutement">
+  <h2>Recrutement</h2>
+  <form id="formRecrutement" style="max-width:500px; margin:auto;">
+    <label for="nom">Nom :</label><br/>
+    <input type="text" id="nom" name="nom" required style="width:100%; padding:8px; margin-bottom:10px;"/>
+
+<label for="emailRecrut">Email :</label><br/>
+<input type="email" id="emailRecrut" name="emailRecrut" required style="width:100%; padding:8px; margin-bottom:10px;"/>
+
+<label for="motivation">Pourquoi souhaites-tu rejoindre notre équipe e-sport ?</label><br/>
+<textarea id="motivation" name="motivation" required style="width:100%; padding:8px; margin-bottom:10px;"></textarea>
+
+<label for="jeuPrincipal">Quel est ton jeu principal et ton niveau actuel ?</label><br/>
+<input type="text" id="jeuPrincipal" name="jeuPrincipal" required style="width:100%; padding:8px; margin-bottom:10px;" placeholder="Ex : Call Of Duty - Diamant"/>
+
+<label for="experienceCompet">Peux-tu décrire ton expérience en compétition e-sport (tournois, ligues, équipes précédentes) ?</label><br/>
+<textarea id="experienceCompet" name="experienceCompet" style="width:100%; padding:8px; margin-bottom:10px;"></textarea>
+
+<label for="roleEquipe">Quel rôle ou position occupes-tu habituellement dans une équipe ?</label><br/>
+<input type="text" id="roleEquipe" name="roleEquipe" style="width:100%; padding:8px; margin-bottom:10px;" placeholder="Ex : Support, Attaquant, Stratège..."/>
+
+<label for="disponibilite">Quelle est ta disponibilité pour les entraînements et compétitions ?</label><br/>
+<input type="text" id="disponibilite" name="disponibilite" required style="width:100%; padding:8px; margin-bottom:10px;" placeholder="Ex : Soirées en semaine, weekends..."/>
+
+
+    <button type="submit" style="background:#00bfff; border:none; padding:10px 15px; color:#121212; font-weight:bold; border-radius:5px; cursor:pointer;">Envoyer</button>
+  </form>
+</section>
+
+<script>
+  const form = document.getElementById('formRecrutement');
+  form.addEventListener('submit', function(event) {
+    event.preventDefault(); // Empêche l'envoi classique du formulaire
+
+    // Ici tu peux récupérer les données si tu veux les traiter ou envoyer via AJAX
+    const nom = document.getElementById('nom').value;
+    const email = document.getElementById('emailRecrut').value;
+    const motivation = document.getElementById('motivation').value;
+
+    // Optionnel: Tu peux faire une validation ou un envoi AJAX ici
+
+    // Message d'alerte personnalisé avec confirmation
+    const confirmation = confirm(
+      "Merci pour ta candidature, " + nom + " !\n\n" +
+      "Clique sur OK pour rejoindre notre Discord."
+    );
+
+    if (confirmation) {
+      // Remplace ce lien par celui de ton serveur Discord
+      window.location.href = "https://discord.com/channels/1255173859104260127/1255398700092489728";
+    }
+  });
+</script>
