@@ -772,82 +772,56 @@ Rejoignez-nous dans cette aventure ambitieuse, car ensemble, nous allons écrire
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
+  <!-- Très important pour le mobile -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Site Responsive</title>
+  <title>Test Mobile</title>
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
     body {
       font-family: Arial, sans-serif;
-      background: #f8f9fa;
+      margin: 0;
+      padding: 0;
     }
+
     header {
       background: #0077cc;
       color: white;
       padding: 15px;
       text-align: center;
     }
+
     nav {
       background: #005fa3;
-    }
-    nav ul {
-      list-style: none;
       display: flex;
-      justify-content: center;
       flex-wrap: wrap;
     }
-    nav ul li a {
+
+    nav a {
       color: white;
-      padding: 12px 20px;
-      display: block;
-      text-decoration: none;
-    }
-    nav ul li a:hover {
-      background: #00457a;
-    }
-    .menu-toggle {
-      display: none;
-      background: #00457a;
-      color: white;
-      border: none;
-      width: 100%;
       padding: 12px;
-      font-size: 16px;
-      cursor: pointer;
+      text-decoration: none;
+      flex: 1;
+      text-align: center;
     }
+
+    nav a:hover {
+      background: #00457a;
+    }
+
     main {
-      max-width: 900px;
-      margin: auto;
-      padding: 20px;
-      background: white;
+      padding: 15px;
     }
+
     img {
       max-width: 100%;
       height: auto;
-      margin: 15px 0;
-      border-radius: 8px;
     }
-    footer {
-      background: #333;
-      color: white;
-      text-align: center;
-      padding: 15px;
-      margin-top: 20px;
-    }
-    /* Mode mobile */
+
     @media (max-width: 600px) {
-      nav ul {
+      nav {
         flex-direction: column;
-        display: none;
       }
-      nav ul.show {
-        display: block;
-      }
-      .menu-toggle {
-        display: block;
+      nav a {
+        border-top: 1px solid rgba(255,255,255,0.3);
       }
     }
   </style>
@@ -855,49 +829,98 @@ Rejoignez-nous dans cette aventure ambitieuse, car ensemble, nous allons écrire
 <body>
 
 <header>
-  <h1>Mon site responsive</h1>
-  <p>Affichage parfait sur téléphone</p>
+  <h1>Test site mobile</h1>
 </header>
 
 <nav>
-  <button class="menu-toggle">☰ Menu</button>
-  <ul>
-    <li><a href="#">Accueil</a></li>
-    <li><a href="#">À propos</a></li>
-    <li><a href="#">Services</a></li>
-    <li><a href="#">Contact</a></li>
-  </ul>
+  <a href="#">Accueil</a>
+  <a href="#">À propos</a>
+  <a href="#">Contact</a>
 </nav>
 
 <main>
   <h2>Bienvenue</h2>
-  <p>Ce site s'adapte automatiquement à la taille de l’écran grâce au responsive design.</p>
-  <img src="https://via.placeholder.com/800x400" alt="Image exemple">
-  <p>Le menu se transforme en hamburger sur mobile pour un affichage clair et pratique.</p>
+  <p>Si ce texte s’affiche bien et que le menu est lisible, alors ton site est compatible mobile.</p>
+  <img src="https://via.placeholder.com/800x400" alt="Exemple">
 </main>
-
-<footer>
-  &copy; 2025 Mon Site - Tous droits réservés
-</footer>
-
-<script>
-  const toggle = document.querySelector('.menu-toggle');
-  const menu = document.querySelector('nav ul');
-  toggle.addEventListener('click', () => {
-    menu.classList.toggle('show');
-  });
-</script>
 
 </body>
 </html>
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <!-- Très important pour le mobile -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Test Mobile</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+    }
 
+    header {
+      background: #0077cc;
+      color: white;
+      padding: 15px;
+      text-align: center;
+    }
 
+    nav {
+      background: #005fa3;
+      display: flex;
+      flex-wrap: wrap;
+    }
 
+    nav a {
+      color: white;
+      padding: 12px;
+      text-decoration: none;
+      flex: 1;
+      text-align: center;
+    }
 
+    nav a:hover {
+      background: #00457a;
+    }
 
+    main {
+      padding: 15px;
+    }
 
+    img {
+      max-width: 100%;
+      height: auto;
+    }
 
+    @media (max-width: 600px) {
+      nav {
+        flex-direction: column;
+      }
+      nav a {
+        border-top: 1px solid rgba(255,255,255,0.3);
+      }
+    }
+  </style>
+</head>
+<body>
 
+<header>
+  <h1>Test site mobile</h1>
+</header>
 
+<nav>
+  <a href="#">Accueil</a>
+  <a href="#">À propos</a>
+  <a href="#">Contact</a>
+</nav>
 
+<main>
+  <h2>Bienvenue</h2>
+  <p>Si ce texte s’affiche bien et que le menu est lisible, alors ton site est compatible mobile.</p>
+  <img src="https://via.placeholder.com/800x400" alt="Exemple">
+</main>
 
+</body>
+</html>
