@@ -769,35 +769,68 @@ Rejoignez-nous dans cette aventure ambitieuse, car ensemble, nous allons écrire
 
 
 
+<!DOCTYPE html>
+<html lang="fr">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-
+  <title>Site Mobile Friendly</title>
   <style>
-    /* Exemple CSS responsive à mettre ici */
     body {
-      font-family: Arial, sans-serif;
       margin: 0;
-      padding: 0;
+      font-family: Arial, sans-serif;
+      padding: 10px;
+      box-sizing: border-box;
     }
-
+    .container {
+      width: 90%;
+      max-width: 600px;
+      margin: auto;
+    }
+    nav {
+      display: flex;
+      justify-content: space-around;
+      background: #eee;
+      padding: 10px;
+      flex-wrap: wrap; /* pour passer en colonne si manque de place */
+    }
+    nav a {
+      text-decoration: none;
+      color: #333;
+      padding: 8px 12px;
+      flex: 1 1 auto;
+      text-align: center;
+      min-width: 80px;
+    }
+    main {
+      padding: 15px;
+      background: #fafafa;
+    }
     img {
       max-width: 100%;
       height: auto;
-    }
-
-    /* Exemple d’adaptation pour petits écrans */
-    @media (max-width: 600px) {
-      body {
-        font-size: 14px;
-      }
-
-      /* Exemple, réduire la taille des titres */
-      h1 {
-        font-size: 1.5em;
-      }
-
-      /* Adapter les marges, padding, etc., selon besoin */
+      display: block;
+      margin: 10px 0;
     }
   </style>
 </head>
+<body>
+  <div class="container">
+    <nav>
+      <a href="#">Accueil</a>
+      <a href="#">Services</a>
+      <a href="#">Contact</a>
+    </nav>
+    <main>
+      <h1>Bienvenue</h1>
+      <p>Voici un site simple qui s'adapte au mobile.</p>
+      <img src="https://via.placeholder.com/800x400" alt="Exemple image" />
+    </main>
+  </div>
+</body>
+</html>
+
+
+
+
+
