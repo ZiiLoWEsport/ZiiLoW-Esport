@@ -686,3 +686,73 @@ Rejoignez-nous dans cette aventure ambitieuse, car ensemble, nous allons écrire
     }
   });
 </script>
+
+
+
+
+
+
+
+
+
+
+<section id="avis client">
+  <h2>Avis client</h2>
+
+  <div id="avisList" style="margin-bottom:20px;">
+    <!-- Les avis s'affichent ici -->
+  </div>
+
+  <form id="formAvis">
+    <label for="nomAvis">Nom :</label><br/>
+    <input type="text" id="nomAvis" required placeholder="Votre prénom ou pseudo" style="width:100%; padding:8px; margin-bottom:10px;" />
+
+    <label for="texteAvis">Votre avis :</label><br/>
+    <textarea id="texteAvis" rows="4" required placeholder="Écrivez votre avis ici..." style="width:100%; padding:8px; margin-bottom:10px;"></textarea>
+
+    <button type="submit" style="background-color:#00bfff; color:#121212; border:none; padding:10px 15px; border-radius:5px; cursor:pointer;">Envoyer</button>
+  </form>
+</section>
+
+<script>
+  const formAvis = document.getElementById('formAvis');
+  const avisList = document.getElementById('avisList');
+
+  // Fonction pour afficher un avis dans la liste
+  function ajouterAvis(nom, texte) {
+    const divAvis = document.createElement('div');
+    divAvis.style.background = '#222';
+    divAvis.style.padding = '10px';
+    divAvis.style.marginBottom = '10px';
+    divAvis.style.borderRadius = '6px';
+    divAvis.style.boxShadow = '0 0 8px #00bfff80';
+
+    divAvis.innerHTML = `
+      <strong style="color:#00bfff;">${nom}</strong><br/>
+      <p style="margin:5px 0;">${texte}</p>
+    `;
+
+    avisList.prepend(divAvis);
+  }
+
+  // Evénement à la soumission du formulaire
+  formAvis.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const nom = document.getElementById('nomAvis').value.trim();
+    const texte = document.getElementById('texteAvis').value.trim();
+
+    if (!nom || !texte) {
+      alert("Merci de remplir tous les champs.");
+      return;
+    }
+
+    ajouterAvis(nom, texte);
+
+    // Reset formulaire
+    formAvis.reset();
+  });
+
+  // Exemple d'avis initial
+  ajouterAvis("Marie", "Super équipe, j'adore suivre leurs compétitions !");
+  ajouterAvis("Lucas", "Très bonne boutique, les produits sont de qualité.");
+</script>
