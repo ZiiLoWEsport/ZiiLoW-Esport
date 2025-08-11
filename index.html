@@ -710,6 +710,11 @@ Rejoignez-nous dans cette aventure ambitieuse, car ensemble, nous allons écrire
     <label for="texteAvis">Votre avis :</label><br/>
     <textarea id="texteAvis" rows="4" required placeholder="Écrivez votre avis ici..." style="width:100%; padding:8px; margin-bottom:10px;"></textarea>
 
+    <label>Note :</label><br/>
+    <div id="stars" style="margin-bottom:10px; font-size:22px; cursor:pointer; color:#888;">
+      ★★★★★
+    </div>
+
     <button type="submit" style="background-color:#00bfff; color:#121212; border:none; padding:10px 15px; border-radius:5px; cursor:pointer;">Envoyer</button>
   </form>
 </section>
@@ -717,9 +722,12 @@ Rejoignez-nous dans cette aventure ambitieuse, car ensemble, nous allons écrire
 <script>
   const formAvis = document.getElementById('formAvis');
   const avisList = document.getElementById('avisList');
+  const starsDiv = document.getElementById('stars');
 
-  // Fonction pour afficher un avis dans la liste
-  function ajouterAvis(nom, texte) {
+  let selectedRating = 0;
+
+  // Affichage d'un avis
+  function ajouterAvis(nom, texte, rating) {
     const divAvis = document.createElement('div');
     divAvis.style.background = '#222';
     divAvis.style.padding = '10px';
@@ -727,35 +735,52 @@ Rejoignez-nous dans cette aventure ambitieuse, car ensemble, nous allons écrire
     divAvis.style.borderRadius = '6px';
     divAvis.style.boxShadow = '0 0 8px #00bfff80';
 
+    let etoiles = '★'.repeat(rating) + '☆'.repeat(5 - rating);
+
     divAvis.innerHTML = `
       <strong style="color:#00bfff;">${nom}</strong><br/>
+      <span style="color:gold; font-size:18px;">${etoiles}</span>
       <p style="margin:5px 0;">${texte}</p>
     `;
 
     avisList.prepend(divAvis);
   }
 
-  // Evénement à la soumission du formulaire
+  // Gestion du clic sur les étoiles
+  starsDiv.addEventListener('click', (e) => {
+    const index = Array.from(starsDiv.textContent).indexOf(e.target.textContent);
+    if (e.target.textContent === '★' || e.target.textContent === '☆') {
+      selectedRating = index + 1;
+      starsDiv.innerHTML = '★'.repeat(selectedRating) + '☆'.repeat(5 - selectedRating);
+      starsDiv.style.color = 'gold';
+    }
+  });
+
+  // Soumission du formulaire
   formAvis.addEventListener('submit', (e) => {
     e.preventDefault();
     const nom = document.getElementById('nomAvis').value.trim();
     const texte = document.getElementById('texteAvis').value.trim();
 
-    if (!nom || !texte) {
-      alert("Merci de remplir tous les champs.");
+    if (!nom || !texte || selectedRating === 0) {
+      alert("Merci de remplir tous les champs et de donner une note.");
       return;
     }
 
-    ajouterAvis(nom, texte);
+    ajouterAvis(nom, texte, selectedRating);
 
     // Reset formulaire
     formAvis.reset();
+    starsDiv.innerHTML = '★★★★★';
+    starsDiv.style.color = '#888';
+    selectedRating = 0;
   });
 
-  // Exemple d'avis initial
-  ajouterAvis("Marie", "Super équipe, j'adore suivre leurs compétitions !");
-  ajouterAvis("Lucas", "Très bonne boutique, les produits sont de qualité.");
+  // Avis par défaut
+  ajouterAvis("Marie", "Super équipe, j'adore suivre leurs compétitions !", 5);
+  ajouterAvis("Lucas", "Très bonne boutique, les produits sont de qualité.", 4);
 </script>
+
 
 
 
