@@ -712,7 +712,11 @@ Rejoignez-nous dans cette aventure ambitieuse, car ensemble, nous allons écrire
 
     <label>Note :</label><br/>
     <div id="stars" style="margin-bottom:10px; font-size:22px; cursor:pointer; color:#888;">
-      ★★★★★
+      <span data-value="1">★</span>
+      <span data-value="2">★</span>
+      <span data-value="3">★</span>
+      <span data-value="4">★</span>
+      <span data-value="5">★</span>
     </div>
 
     <button type="submit" style="background-color:#00bfff; color:#121212; border:none; padding:10px 15px; border-radius:5px; cursor:pointer;">Envoyer</button>
@@ -723,6 +727,7 @@ Rejoignez-nous dans cette aventure ambitieuse, car ensemble, nous allons écrire
   const formAvis = document.getElementById('formAvis');
   const avisList = document.getElementById('avisList');
   const starsDiv = document.getElementById('stars');
+  const starElems = starsDiv.querySelectorAll('span');
 
   let selectedRating = 0;
 
@@ -746,15 +751,33 @@ Rejoignez-nous dans cette aventure ambitieuse, car ensemble, nous allons écrire
     avisList.prepend(divAvis);
   }
 
-  // Gestion du clic sur les étoiles
-  starsDiv.addEventListener('click', (e) => {
-    const index = Array.from(starsDiv.textContent).indexOf(e.target.textContent);
-    if (e.target.textContent === '★' || e.target.textContent === '☆') {
-      selectedRating = index + 1;
-      starsDiv.innerHTML = '★'.repeat(selectedRating) + '☆'.repeat(5 - selectedRating);
-      starsDiv.style.color = 'gold';
-    }
+  // Effet au survol
+  starElems.forEach(star => {
+    star.addEventListener('mouseover', () => {
+      const val = parseInt(star.dataset.value);
+      colorStars(val);
+    });
+
+    star.addEventListener('mouseout', () => {
+      colorStars(selectedRating);
+    });
+
+    star.addEventListener('click', () => {
+      selectedRating = parseInt(star.dataset.value);
+      colorStars(selectedRating);
+    });
   });
+
+  // Colorer les étoiles
+  function colorStars(rating) {
+    starElems.forEach((star, index) => {
+      if (index < rating) {
+        star.style.color = 'gold';
+      } else {
+        star.style.color = '#888';
+      }
+    });
+  }
 
   // Soumission du formulaire
   formAvis.addEventListener('submit', (e) => {
@@ -771,15 +794,15 @@ Rejoignez-nous dans cette aventure ambitieuse, car ensemble, nous allons écrire
 
     // Reset formulaire
     formAvis.reset();
-    starsDiv.innerHTML = '★★★★★';
-    starsDiv.style.color = '#888';
     selectedRating = 0;
+    colorStars(0);
   });
 
   // Avis par défaut
   ajouterAvis("Marie", "Super équipe, j'adore suivre leurs compétitions !", 5);
   ajouterAvis("Lucas", "Très bonne boutique, les produits sont de qualité.", 4);
 </script>
+
 
 
 
