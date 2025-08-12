@@ -993,7 +993,7 @@ ajouterAvis("Lucas","Très bonne boutique, les produits sont de qualité.",4);
 
 
 
-<!-- FOND VIDEO PLEIN ÉCRAN, YOUTUBE -->
+<!-- Fond vidéo YouTube plein écran -->
 <div style="position:fixed; inset:0; overflow:hidden; z-index:-1;">
   <iframe
     src="https://www.youtube-nocookie.com/embed/9BWweweAqFw?autoplay=1&mute=1&controls=0&playsinline=1&modestbranding=1&rel=0&loop=1&playlist=9BWweweAqFw"
@@ -1006,7 +1006,28 @@ ajouterAvis("Lucas","Très bonne boutique, les produits sont de qualité.",4);
 </div>
 
 <!-- Ton contenu par-dessus -->
-<div style="position:relative; z-index:1; color:#fff;">
+<div style="position:relative; z-index:1;">
+  <!-- … le reste de ta page … -->
+</div>
+
+
+
+
+<video
+  id="bg-video"
+  autoplay
+  muted
+  loop
+  playsinline
+  preload="auto"
+  style="position:fixed; inset:0; width:100%; height:100%; object-fit:cover; z-index:-1"
+>
+  <source src="/videos/cod-bg.mp4" type="video/mp4">
+  Votre navigateur ne supporte pas la vidéo HTML5.
+</video>
+
+<!-- Ton contenu par-dessus -->
+<div style="position:relative; z-index:1;">
   <!-- … le reste de ta page … -->
 </div>
 
