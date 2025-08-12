@@ -61,6 +61,7 @@ footer{position:fixed;bottom:0;left:0;width:100%;height:50px;background:#111;col
 .vh{position:absolute;opacity:0;pointer-events:none}
 .saveMsg{display:none;margin-top:10px;color:#0f0}
 
+
 /* --------- Avatar dans la nav --------- */
 #navAvatarBtn{display:none;background:#1e1e1e;border:1px solid #333;padding:4px 8px;border-radius:999px;cursor:pointer;align-items:center;gap:8px}
 #navAvatarBtn:hover{border-color:#00bfff;box-shadow:0 0 8px rgba(0,191,255,.25)}
@@ -611,13 +612,13 @@ Que vous soyez joueur passionné, amateur d’eSport ou simple curieux, nous vou
       <h3>Maillot Officiel ZiiLoW eSport</h3>
       <img src="https://i.postimg.cc/tR3g7My2/raw-Photoroom.png" alt="Maillot ZiiLoW Esport" />
       <p>Maillot officiel de l’équipe ZiiLoW Esport, alliant confort et style, disponible dans toutes les tailles.</p>
-      <button class="btnPayer" data-prix="90">Payer 90 € avec PayPal</button>
+      <button class="btnPayer" data-prix="90">Payer 90 € avec PayPal</button> <button class="add-to-cart">Ajouter au panier</button>
     </div>
     <div class="produit">
       <h3>Coque Officielle ZiiLoW </h3>
       <img src="https://i.postimg.cc/qqdGk5r9/Capture-Photoroom.png" alt="Coque ZiiLoW Esport" />
       <p>Coque de téléphone ZiiLoW, à la fois robuste et élégante, compatible avec une large gamme de modèles.</p>
-      <button class="btnPayer" data-prix="45">Payer 45 € avec PayPal</button>
+      <button class="btnPayer" data-prix="45">Payer 45 € avec PayPal</button> <button class="add-to-cart">Ajouter au panier</button> 
     </div>
   </div>
 
@@ -1011,4 +1012,44 @@ ajouterAvis("Lucas","Très bonne boutique, les produits sont de qualité.",4);
 
 
 
+
+
+
+<style>
+/* Ligne de boutons côte à côte sur les cartes produit */
+.btn-row{
+  display:flex; gap:8px; margin-top:auto; flex-wrap:wrap;
+}
+.btn-row button{
+  flex:1 1 140px;
+}
+<style>
+
+<div class="produit" 
+     data-id="jersey01" 
+     data-name="Maillot Officiel ZiiLoW eSport" 
+     data-price="90" 
+     data-img="https://i.postimg.cc/tR3g7My2/raw-Photoroom.png">
+  <h3>Maillot Officiel ZiiLoW eSport</h3>
+  <img src="https://i.postimg.cc/tR3g7My2/raw-Photoroom.png" alt="Maillot ZiiLoW Esport" />
+  <p>Maillot officiel de l’équipe ZiiLoW Esport, alliant confort et style, disponible dans toutes les tailles.</p>
+  <div class="btn-row">
+    <button class="add-to-cart">Ajouter au panier</button>
+    <button class="btnPayNow" data-prix="90">Payer 90 € (PayPal)</button>
+  </div>
+</div>
+
+<div class="produit" 
+     data-id="case01" 
+     data-name="Coque Officielle ZiiLoW" 
+     data-price="45" 
+     data-img="https://i.postimg.cc/qqdGk5r9/Capture-Photoroom.png">
+  <h3>Coque Officielle ZiiLoW</h3>
+  <img src="https://i.postimg.cc/qqdGk5r9/Capture-Photoroom.png" alt="Coque ZiiLoW Esport" />
+  <p>Coque de téléphone ZiiLoW, robuste et élégante, compatible avec une large gamme de modèles.</p>
+  <div class="btn-row">
+    <button class="add-to-cart">Ajouter au panier</button>
+    <button class="btnPayNow" data-prix="45">Payer 45 € (PayPal)</button>
+  </div>
+</div>
 
