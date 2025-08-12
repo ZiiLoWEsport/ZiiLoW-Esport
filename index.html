@@ -1,410 +1,572 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>ZiiLoW Esport</title>
+
   <style>
-#modalForm {
-  display: none;
-  position: fixed;
-  top: 0; left: 0;
-  width: 100%; height: 100%;
-  background: rgba(0, 0, 0, 0.5);
-  z-index: 1000;
-  font-family: Arial, sans-serif;
+/* --------- Modal form (laissé tel quel) --------- */
+#modalForm{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.5);z-index:1000;font-family:Arial, sans-serif}
+#modalForm>div{background:#fff;max-width:400px;margin:50px auto;padding:20px;border-radius:8px;position:relative;color:#000}
+#modalForm label{font-weight:bold;color:#000}
+#modalForm input[type="email"],#modalForm input[type="tel"],#modalForm textarea{width:100%;padding:8px;margin-top:5px;margin-bottom:15px;border:1px solid #ccc;border-radius:4px;color:#000;background:#fff;box-sizing:border-box;font-size:14px}
+#modalForm button{padding:10px 15px;border:none;border-radius:4px;background-color:#0070ba;color:#fff;cursor:pointer;font-size:16px}
+#modalForm button#btnClose{background-color:#aaa}
+#modalForm button:hover{opacity:.9}
+
+/* --------- Base --------- */
+body{margin:0;padding:0;font-family:Arial, sans-serif;color:#eee;background:#000;position:relative;overflow-x:hidden;padding-bottom:50px}
+body::before{content:"";position:fixed;top:0;left:-50%;width:200%;height:100vh;background:linear-gradient(90deg,rgba(255,255,255,.15),rgba(0,120,255,.7),rgba(255,255,255,.15));filter:blur(80px);animation:glowMove 6s linear infinite;z-index:-1}
+@keyframes glowMove{0%{transform:translateX(-100%)}100%{transform:translateX(100%)}}
+nav{background:#1e1e1e;padding:15px;display:flex;justify-content:space-between;align-items:center;font-weight:bold;position:sticky;top:0;z-index:1000}
+nav .nav-links{display:flex;gap:30px;flex-wrap:wrap}
+nav a{color:#00bfff;text-decoration:none;font-size:1.1rem;cursor:pointer}
+nav a:hover, nav a.active{text-decoration:underline}
+header h1{text-align:center;padding:20px;color:#00bfff;margin:0}
+section{padding:20px;max-width:900px;margin:auto;display:none}
+section.active{display:block}
+h2{border-bottom:2px solid #00bfff;padding-bottom:10px;margin-bottom:20px}
+ul{list-style:none;padding-left:0}
+ul li{margin:10px 0;font-size:1.1rem;display:flex;align-items:center;gap:10px}
+.produits{display:flex;gap:20px;flex-wrap:wrap;justify-content:center}
+.produit{background:#222;padding:10px;border-radius:8px;width:200px;box-shadow:0 0 8px #00bfff80;text-align:center;display:flex;flex-direction:column}
+.produit h3{margin:10px 0 5px 0;color:#00bfff;min-height:2.6em}
+.produit img{width:80%;height:180px;object-fit:contain;border-radius:6px;margin:6px auto 8px}
+.produit p{font-size:.9rem;margin-bottom:15px;min-height:60px}
+.produit button,.produit form button{background:#00bfff;border:none;color:#121212;padding:10px 15px;font-weight:bold;border-radius:5px;cursor:pointer;transition:background-color .3s ease;margin-top:auto}
+.produit button:hover,.produit form button:hover{background:#008fcf}
+    /* Ajout pour placer le bouton en bas */
+    margin-top: auto;
+.produit button:hover,.produit form button:hover{background:#008fcf}
+.contact-list{font-size:1.1rem;margin-bottom:20px}
+.contact-list li{margin-bottom:10px}
+.discord-link{display:inline-block;vertical-align:middle}
+.discord-link img{width:40px;height:40px;cursor:pointer;filter:brightness(0) invert(1);transition:filter .3s ease}
+.discord-link img:hover{filter:brightness(0) invert(.6) drop-shadow(0 0 5px #00bfff)}
+.social-link{display:flex;align-items:center;gap:8px;color:#00bfff;text-decoration:none;font-weight:bold;margin-bottom:12px}
+.social-link img{width:28px;height:28px;filter:brightness(0) invert(1);transition:filter .3s ease}
+.social-link:hover img{filter:brightness(0) invert(.6) drop-shadow(0 0 5px #00bfff)}
+footer{position:fixed;bottom:0;left:0;width:100%;height:50px;background:#111;color:#ccc;text-align:center;line-height:50px;font-size:14px;z-index:1000;margin-top:40px}
+
+/* --------- Mon compte + logos --------- */
+.account-card{background:#222;border-radius:10px;padding:16px;box-shadow:0 0 8px #00bfff80;margin-bottom:16px}
+.account-row{display:flex;gap:16px;flex-wrap:wrap;align-items:center}
+.avatar{width:84px;height:84px;border-radius:50%;background:#111;border:2px solid #00bfff;display:flex;align-items:center;justify-content:center;overflow:hidden}
+.avatar img{width:100%;height:100%;object-fit:cover}
+.logo-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(90px,1fr));gap:12px}
+.logo-item{background:#1b1b1b;border:1px solid #333;border-radius:10px;padding:8px;text-align:center;cursor:pointer;transition:transform .15s, box-shadow .15s, border-color .15s}
+.logo-item img{width:100%;height:70px;object-fit:contain;filter:brightness(.95)}
+.logo-item.selected{border-color:#00bfff;box-shadow:0 0 10px rgba(0,191,255,.35);transform:translateY(-2px)}
+.vh{position:absolute;opacity:0;pointer-events:none}
+.saveMsg{display:none;margin-top:10px;color:#0f0}
+
+/* --------- Avatar dans la nav --------- */
+#navAvatarBtn{display:none;background:#1e1e1e;border:1px solid #333;padding:4px 8px;border-radius:999px;cursor:pointer;align-items:center;gap:8px}
+#navAvatarBtn:hover{border-color:#00bfff;box-shadow:0 0 8px rgba(0,191,255,.25)}
+#navAvatar{width:28px;height:28px;border-radius:50%;object-fit:cover}
+#navAccountLabel{color:#bbb;font-size:.9rem}
+
+/* --------- Upload custom logo --------- */
+#customLogoPreview{display:none;width:140px;height:140px;border-radius:12px;object-fit:cover;border:2px solid #333;margin-top:10px}
+
+/* --------- Infos perso --------- */
+.info-list{margin:0;padding-left:0;list-style:none}
+.info-list li{margin:6px 0}
+.info-form label{display:block;margin-top:10px}
+.info-actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:12px}
+.danger{background:#ff4d4f;border:none;color:#fff;padding:8px 12px;border-radius:6px;cursor:pointer}
+.btn{background:#00bfff;border:none;color:#121212;padding:8px 12px;border-radius:6px;cursor:pointer}
+
+/* --------- Backdrop + Popup centrée --------- */
+.modal-backdrop{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.55);z-index:1999;display:none}
+#loginPopup{position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);width:clamp(280px,92vw,380px);background:#222;border:2px solid #00bfff;border-radius:10px;padding:20px;color:#eee;z-index:2000;display:none;box-sizing:border-box;box-shadow:0 10px 30px rgba(0,0,0,.5)}
+#loginPopup h2{margin:0 0 12px;color:#00bfff;border-bottom:1px solid #00bfff;padding-bottom:8px}
+#loginPopup label{display:block;margin-top:10px}
+#loginPopup input[type="email"],#loginPopup input[type="password"]{width:100%;padding:8px;margin-top:5px;border-radius:6px;border:1px solid #333;background:#111;color:#eee}
+#loginPopup button{margin-top:15px;width:100%;background:#00bfff;border:none;color:#121212;padding:10px;font-weight:bold;border-radius:8px;cursor:pointer}
+#loginPopup .close-btn{position:absolute;top:6px;right:10px;cursor:pointer;font-weight:bold;color:#00bfff}
+#loginPopup a{color:#00bfff;font-size:.9rem;text-decoration:underline;display:inline-block;margin-top:10px}
+  </style>
+
+  <!-- ===== CSS HERO (déplacé depuis le bas, inchangé) ===== -->
+  <style>
+/* ===== HERO animé (fond + logo) ===== */
+.hero-bg{position:relative;min-height:90vh;display:grid;place-items:center;overflow:hidden;isolation:isolate}
+/* Vidéo en arrière-plan (si utilisée dans .hero-bg) */
+#bg-video{position:fixed;inset:0;width:100%;height:100%;object-fit:cover;z-index:-1}
+/* Masque l’ancien fond global pour laisser voir la vidéo */
+body::before{display:none !important}
+
+.hero-bg::before{content:"";position:absolute;inset:-20%;background:conic-gradient(from 0deg, rgba(56,199,255,.06), transparent 35%, rgba(56,199,255,.08), transparent 70%, rgba(56,199,255,.06));filter:blur(40px);animation:hero-swirl 22s linear infinite;z-index:-1}
+@keyframes hero-swirl{to{transform:rotate(360deg)}}
+.hero-particles,.hero-particles::before,.hero-particles::after{position:absolute;inset:0;opacity:.35;background:
+radial-gradient(2px 2px at 10% 20%, rgba(255,255,255,.8), transparent 60%),
+radial-gradient(2px 2px at 30% 70%, rgba(56,199,255,.9), transparent 60%),
+radial-gradient(2px 2px at 60% 40%, rgba(255,255,255,.7), transparent 60%),
+radial-gradient(2px 2px at 80% 85%, rgba(56,199,255,1), transparent 60%),
+radial-gradient(1.5px 1.5px at 45% 15%, rgba(255,255,255,.6), transparent 60%),
+radial-gradient(1.5px 1.5px at 75% 55%, rgba(56,199,255,.8), transparent 60%)}
+.hero-particles{animation:hero-floatA 14s linear infinite}
+.hero-particles::before{content:"";animation:hero-floatB 18s linear infinite reverse}
+.hero-particles::after{content:"";animation:hero-floatC 20s linear infinite;opacity:.25}
+@keyframes hero-floatA{to{transform:translateY(-30px)}}
+@keyframes hero-floatB{to{transform:translateY(25px)}}
+@keyframes hero-floatC{to{transform:translateY(-18px)}}
+.hero-logo{position:relative;width:min(40vw,520px);aspect-ratio:1/1;display:grid;place-items:center;filter:drop-shadow(0 12px 40px rgba(56,199,255,.25))}
+.hero-logo::before{content:"";position:absolute;inset:-10%;background:radial-gradient(circle, rgba(56,199,255,.35) 0%, rgba(56,199,255,.08) 35%, transparent 70%);filter:blur(14px);animation:hero-pulse 3.4s ease-in-out infinite}
+@keyframes hero-pulse{0%,100%{transform:scale(1);opacity:.8}50%{transform:scale(1.05);opacity:1}}
+.hero-logo__img{position:relative;width:100%;height:100%;background-size:contain;background-position:center;background-repeat:no-repeat}
+.hero-logo__img::after{content:"";position:absolute;inset:0;background:linear-gradient(115deg, transparent 30%, rgba(255,255,255,.35) 45%, transparent 60%);mix-blend-mode:screen;transform:translateX(-120%) rotate(.001deg);animation:hero-sweep 4.8s ease-in-out infinite 1.2s}
+@keyframes hero-sweep{0%{transform:translateX(-120%);opacity:0}20%{opacity:.9}50%{transform:translateX(120%);opacity:0}100%{transform:translateX(120%);opacity:0}}
+  </style>
+
+  <script>
+/* ---------- Helpers ---------- */
+function uid(){
+  return 'ZLW-' + Date.now().toString(36).toUpperCase() + '-' +
+         Math.random().toString(36).slice(2,7).toUpperCase();
+}
+async function hashString(str){
+  try{
+    const enc=new TextEncoder().encode(str);
+    const digest=await crypto.subtle.digest('SHA-256', enc);
+    return Array.from(new Uint8Array(digest)).map(b=>b.toString(16).padStart(2,'0')).join('');
+  }catch(e){
+    let h=0; for(let i=0;i<str.length;i++){h=(h<<5)-h+str.charCodeAt(i);h|=0;}
+    return 'FALLBACK-'+(h>>>0).toString(16);
+  }
 }
 
-#modalForm > div {
-  background: #fff;
-  max-width: 400px;
-  margin: 50px auto;
-  padding: 20px;
-  border-radius: 8px;
-  position: relative;
-  color: #000;
+/* ---------- NAV SECTIONS ---------- */
+function showSection(sectionId, element){
+  document.querySelectorAll('section').forEach(sec=>sec.classList.remove('active'));
+  const sec=document.getElementById(sectionId);
+  if(sec) sec.classList.add('active');
+  document.querySelectorAll('nav a').forEach(a=>a.classList.remove('active'));
+  if(element) element.classList.add('active');
+  window.scrollTo({top:0,behavior:'smooth'});
+  hideLoginPopup();
 }
 
-#modalForm label {
-  font-weight: bold;
-  color: #000;
+/* ---------- AUTH (localStorage) ---------- */
+
+/* --- Register local d’utilisateurs (liste complète) --- */
+function getUsers(){
+  try { return JSON.parse(localStorage.getItem('zl_users') || '[]'); }
+  catch(e){ return []; }
+}
+function saveUsers(arr){
+  localStorage.setItem('zl_users', JSON.stringify(arr));
+}
+function findUserByEmail(email){
+  return getUsers().find(u => (u.email||'').toLowerCase() === email.toLowerCase());
 }
 
-#modalForm input[type="email"],
-#modalForm input[type="tel"],
-#modalForm textarea {
-  width: 100%;
-  padding: 8px;
-  margin-top: 5px;
-  margin-bottom: 15px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  color: #000;
-  background: #fff;
-  box-sizing: border-box;
-  font-size: 14px;
-}
+function getUser(){ try{ return JSON.parse(localStorage.getItem('zl_user')||'null'); }catch(e){ return null; } }
+function setUser(u){ localStorage.setItem('zl_user', JSON.stringify(u)); }
 
-#modalForm button {
-  padding: 10px 15px;
-  border: none;
-  border-radius: 4px;
-  background-color: #0070ba;
-  color: white;
-  cursor: pointer;
-  font-size: 16px;
-}
+function updateAuthButtons(){
+  const user = getUser();
+  const loginBtn = document.getElementById('loginBtn');
+  const navAvatarBtn = document.getElementById('navAvatarBtn');
+  const navAvatar = document.getElementById('navAvatar');
+  const navLabel = document.getElementById('navAccountLabel');
 
-#modalForm button#btnClose {
-  background-color: #aaa;
-}
-
-#modalForm button:hover {
-  opacity: 0.9;
-}
-</style>
-
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>ZiiLoW Esport </title>
-<style>
-
-  body {
-  padding-bottom: 50px; /* pour laisser la place au footer */
-}
-
-footer {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  height: 50px;
-  background-color: #111;
-  color: #ccc;
-  text-align: center;
-  line-height: 50px;
-  font-size: 14px;
-  z-index: 1000;
-}
-
-body {
-  margin: 0; padding: 0;
-  font-family: Arial, sans-serif;
-  color: #eee;
-  background: #000;
-  position: relative;
-  overflow: hidden;
-  z-index: 0;
-}
-
-body::before {
-  content: "";
-  position: fixed; /* fixe pour couvrir toute la page */
-  top: 0;
-  left: -50%;
-  width: 200%;
-  height: 100vh;
-  background: linear-gradient(90deg, rgba(255,255,255,0.15), rgba(0, 120, 255, 0.7), rgba(255,255,255,0.15));
-  filter: blur(80px);
-  animation: glowMove 6s linear infinite;
-  z-index: -1;
-}
-
-@keyframes glowMove {
-  0% {
-    transform: translateX(-100%);
-  }
-  100% {
-    transform: translateX(100%);
+  if(user){
+    const logo = user.logo || localStorage.getItem('zl_logo') || 'https://via.placeholder.com/28x28?text=Z';
+    if(navAvatar) navAvatar.src = logo;
+    if(navLabel) navLabel.textContent = user.username || 'Utilisateur';
+    if(loginBtn) loginBtn.style.display = 'none';
+    if(navAvatarBtn) navAvatarBtn.style.display = 'flex';
+  }else{
+    if(loginBtn) loginBtn.style.display = 'inline-block';
+    if(navAvatarBtn) navAvatarBtn.style.display = 'none';
   }
 }
 
+function logout(){
+  localStorage.removeItem('zl_user');
+  updateAuthButtons();
+  alert("Vous êtes déconnecté.");
+  const firstLink = document.querySelector('nav .nav-links a');
+  if(firstLink){
+    const id = firstLink.getAttribute('onclick').match(/'([^']+)'/)[1];
+    showSection(id, firstLink);
+  }
+}
 
-  nav {
-    background:#1e1e1e;
-    padding:15px;
-    display:flex;
-    justify-content: space-between;
-    align-items: center;
-    font-weight:bold;
-    position: sticky;
-    top: 0;
-    z-index: 1000;
-  }
+/* ---------- Rendu en-têtes + infos perso ---------- */
+function updateAccountHeader(){
+  const user=getUser() || {};
+  const displayName = user.username || user.email || '—';
 
-  nav .nav-links {
-    display: flex;
-    gap: 30px;
+  const topSpan=document.getElementById('accDisplayTop');
+  const usernameSpan=document.getElementById('accUsername');
+  const idSpan=document.getElementById('accId');
+  const avatarImg=document.getElementById('accAvatarImg');
+
+  if(topSpan) topSpan.textContent = displayName;
+  if(usernameSpan) usernameSpan.textContent = user.username || '—';
+  if(idSpan) idSpan.textContent = user.id || '—';
+  if(avatarImg){
+    const logo= user?.logo || localStorage.getItem('zl_logo');
+    if(logo) avatarImg.src=logo;
   }
-  nav a {
-    color:#00bfff;
-    text-decoration:none;
-    font-size: 1.1rem;
-    cursor:pointer;
+  fillPersonalInfoView(user);
+}
+
+/* ---------- POPUP LOGIN : centré + backdrop ---------- */
+function toggleLoginPopup(){
+  const popup=document.getElementById('loginPopup');
+  const bd=document.getElementById('loginBackdrop');
+  const open = popup.style.display==='block';
+  if(open){
+    popup.style.display='none';
+    if(bd) bd.style.display='none';
+    document.body.style.overflow='';
+  }else{
+    popup.style.display='block';
+    if(bd) bd.style.display='block';
+    document.body.style.overflow='hidden';
   }
-  nav a:hover, nav a.active {
-    text-decoration: underline;
-  }
-  header h1 {
-    text-align:center;
-    padding: 20px;
-    color:#00bfff;
-    margin: 0;
-  }
-  section {
-    padding: 20px;
-    max-width: 900px;
-    margin: auto;
-    display: none;
-  }
-  section.active {
-    display: block;
-  }
-  h2 {
-    border-bottom: 2px solid #00bfff;
-    padding-bottom: 10px;
-    margin-bottom: 20px;
-  }
-  ul {
-    list-style: none;
-    padding-left: 0;
-  }
-  ul li {
-    margin: 10px 0;
-    font-size: 1.1rem;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
-  .produits {
-    display: flex;
-    gap: 20px;
-    flex-wrap: wrap;
-    justify-content: center;
-  }
-  .produit {
-    background: #222;
-    padding: 15px;
-    border-radius: 8px;
-    width: 250px;
-    box-shadow: 0 0 8px #00bfff80;
-    text-align: center;
-  }
-  .produit img {
-    max-width: 100%;
-    border-radius: 6px;
-  }
-  .produit h3 {
-    margin: 10px 0 5px 0;
-    color: #00bfff;
-  }
-  .produit p {
-    font-size: 0.9rem;
-    margin-bottom: 15px;
-  }
-  .produit button, .produit form button {
-    background-color: #00bfff;
-    border: none;
-    color: #121212;
-    padding: 10px 15px;
-    font-weight: bold;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-  }
-  .produit button:hover, .produit form button:hover {
-    background-color: #008fcf;
-  }
-  .contact-list {
-    font-size: 1.1rem;
-    margin-bottom: 20px;
-  }
-  .contact-list li {
-    margin-bottom: 10px;
-  }
-  .discord-link {
-    display: inline-block;
-    vertical-align: middle;
-  }
-  .discord-link img {
-    width: 40px;
-    height: 40px;
-    cursor: pointer;
-    filter: brightness(0) invert(1);
-    transition: filter 0.3s ease;
-  }
-  .discord-link img:hover {
-    filter: brightness(0) invert(0.6) drop-shadow(0 0 5px #00bfff);
-  }
-  /* Icônes réseaux dans la section Nos réseaux */
-  .social-link {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    color: #00bfff;
-    text-decoration: none;
-    font-weight: bold;
-    margin-bottom: 12px;
-  }
-  .social-link img {
-    width: 28px;
-    height: 28px;
-    filter: brightness(0) invert(1);
-    transition: filter 0.3s ease;
-  }
-  .social-link:hover img {
-    filter: brightness(0) invert(0.6) drop-shadow(0 0 5px #00bfff);
-  }
-  footer {
-    background-color: #1e1e1e;
-    padding: 15px;
-    text-align: center;
-    color: #777;
-    margin-top: 40px;
-    font-size: 0.9rem;
+}
+function hideLoginPopup(){
+  const popup=document.getElementById('loginPopup');
+  const bd=document.getElementById('loginBackdrop');
+  if(popup) popup.style.display='none';
+  if(bd) bd.style.display='none';
+  document.body.style.overflow='';
+}
+
+async function submitLogin(event){
+  event.preventDefault();
+  const email = document.getElementById('email').value.trim();
+  const password = document.getElementById('password').value.trim();
+  if(!email || !password){ alert("Remplis email et mot de passe."); return; }
+
+  const registered = findUserByEmail(email);
+  if(!registered){
+    alert("Aucun compte trouvé avec cet email. Crée un compte d’abord.");
+    showRegisterForm();
+    return;
   }
 
-  /* Styles pour la popup de connexion / inscription */
-  #loginPopup {
-    position: fixed;
-    top: 50%;
-    right: 20px;
-    transform: translateY(-50%);
-    background: #222;
-    border: 2px solid #00bfff;
-    border-radius: 8px;
-    padding: 20px;
-    width: 300px;
-    color: #eee;
-    display: none;
-    z-index: 2000;
-  }
-  #loginPopup h2 {
-    margin-top: 0;
-    color: #00bfff;
-  }
-  #loginPopup label {
-    display: block;
-    margin-top: 10px;
-  }
-  #loginPopup input[type="email"],
-  #loginPopup input[type="password"] {
-    width: 100%;
-    padding: 8px;
-    margin-top: 5px;
-    border-radius: 4px;
-    border: none;
-  }
-  #loginPopup button {
-    margin-top: 15px;
-    width: 100%;
-    background-color: #00bfff;
-    border: none;
-    color: #121212;
-    padding: 10px;
-    font-weight: bold;
-    border-radius: 5px;
-    cursor: pointer;
-  }
-  #loginPopup button:hover {
-    background-color: #008fcf;
-  }
-  #loginPopup .close-btn {
-    position: absolute;
-    top: 5px;
-    right: 10px;
-    cursor: pointer;
-    font-weight: bold;
-    color: #00bfff;
-  }
-  #loginPopup a {
-    color: #00bfff;
-    font-size: 0.9rem;
-    cursor: pointer;
-    text-decoration: underline;
-    display: inline-block;
-    margin-top: 10px;
-  }
-</style>
-<script>
-  function showSection(sectionId, element) {
-    document.querySelectorAll('section').forEach(sec => sec.classList.remove('active'));
-    document.getElementById(sectionId).classList.add('active');
-
-    document.querySelectorAll('nav a').forEach(a => a.classList.remove('active'));
-    element.classList.add('active');
-
-    window.scrollTo({top:0, behavior:'smooth'});
-
-    // Fermer la popup connexion si ouverte
-    hideLoginPopup();
+  const passHash = await hashString(password);
+  if(registered.passwordHash !== passHash){
+    alert("Mot de passe incorrect.");
+    return;
   }
 
-  window.onload = () => {
-    const defaultLink = document.querySelector('nav .nav-links a');
-    if(defaultLink) {
-      defaultLink.click();
-    }
+  // Connecte l'utilisateur existant (on NE crée plus ici)
+  setUser({
+    id: registered.id,
+    username: registered.username,
+    firstName: registered.firstName,
+    lastName: registered.lastName,
+    address: registered.address,
+    phone: registered.phone,
+    email: registered.email,
+    logo: registered.logo || localStorage.getItem('zl_logo') || "",
+    passwordHash: registered.passwordHash
+  });
+
+  alert(`Connexion réussie pour ${registered.username}.`);
+  hideLoginPopup();
+  updateAuthButtons();
+  showSection('moncompte');
+  updateAccountHeader();
+}
+
+function showRegisterForm(){ document.getElementById('loginForm').style.display='none'; document.getElementById('registerForm').style.display='block'; }
+function showLoginForm(){ document.getElementById('registerForm').style.display='none'; document.getElementById('loginForm').style.display='block'; }
+
+async function submitRegister(event){
+  event.preventDefault();
+  const username  = document.getElementById('regUsername').value.trim();
+  const firstName = document.getElementById('regFirstName').value.trim();
+  const lastName  = document.getElementById('regLastName').value.trim();
+  const address   = document.getElementById('regAddress').value.trim();
+  const phone     = document.getElementById('regPhone').value.trim();
+  const email     = document.getElementById('regEmail').value.trim();
+  const password  = document.getElementById('regPassword').value;
+  const confirm   = document.getElementById('regPasswordConfirm').value;
+
+  if(!username || !firstName || !lastName || !address || !phone || !email || !password || !confirm){
+    alert("Merci de remplir tous les champs."); return;
+  }
+  if(password !== confirm){ alert("Les mots de passe ne correspondent pas."); return; }
+
+  const user = {
+    id: uid(),
+    username, firstName, lastName, address, phone, email,
+    passwordHash: await hashString(password),
+    logo: localStorage.getItem('zl_logo') || ""
   };
+  setUser(user);
 
-  function toggleLoginPopup() {
-    const popup = document.getElementById('loginPopup');
-    if(popup.style.display === 'block') {
-      popup.style.display = 'none';
-    } else {
-      popup.style.display = 'block';
-    }
-  }
-
-  function hideLoginPopup() {
-    document.getElementById('loginPopup').style.display = 'none';
-  }
-
-function forgotPassword() {
-  // Cacher toutes les sections principales et la popup
-  document.querySelectorAll('section').forEach(sec => sec.classList.remove('active'));
+  alert("Compte créé avec succès (fictif). Vous êtes maintenant connecté.");
   hideLoginPopup();
 
-  // Afficher la page de réinitialisation
-  document.getElementById('forgotPasswordPage').style.display = 'block';
-
-  // Scroll en haut
-  window.scrollTo({top: 0, behavior: 'smooth'});
+  updateAuthButtons();
+  showSection('moncompte');
+  updateAccountHeader();
 }
 
-  function submitLogin(event) {
-    event.preventDefault();
-    const email = document.getElementById('email').value;
-    const password = document.getElementById('password').value;
-    alert(`Connexion effectuée pour ${email} (fonction fictive).`);
-    hideLoginPopup();
+/* ---------- MDP OUBLIÉ ---------- */
+function forgotPassword(){
+  document.querySelectorAll('section').forEach(sec=>sec.classList.remove('active'));
+  hideLoginPopup();
+  document.getElementById('forgotPasswordPage').style.display='block';
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function submitForgotPasswordPage(e){
+  e.preventDefault();
+  const email=document.getElementById('forgotEmailPage').value.trim();
+  if(!email){ alert("Merci d’indiquer votre email."); return; }
+  alert("Code envoyé (fictif).");
+}
+function returnToHome(){
+  document.getElementById('forgotPasswordPage').style.display='none';
+  const defaultLink=document.querySelector('nav .nav-links a');
+  if(defaultLink) showSection(defaultLink.getAttribute('onclick').match(/'([^']+)'/)[1], defaultLink);
+}
+
+/* ---------- Boutique PayPal ---------- */
+document.addEventListener('DOMContentLoaded', ()=>{
+  const btnPayers=document.querySelectorAll('.btnPayer');
+  const confirmationPaiement=document.getElementById('confirmationPaiement');
+  const bonCommande=document.getElementById('bonCommande');
+  const btnGenererBon=document.getElementById('btnGenererBon');
+  const numCommandeSpan=document.getElementById('numCommande');
+  const emailConf=document.getElementById('emailConf');
+
+  btnPayers.forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      const prix=btn.getAttribute('data-prix');
+      window.open(`https://www.paypal.me/ziilowesport/${prix}`, '_blank');
+      if(confirmationPaiement) confirmationPaiement.style.display='block';
+      if(bonCommande) bonCommande.style.display='none';
+      if(emailConf) emailConf.value='';
+    });
+  });
+
+  if(btnGenererBon){
+    btnGenererBon.addEventListener('click', ()=>{
+      if(!emailConf.value.trim()){ alert("Merci de saisir votre email."); return; }
+      const orderNumber=Math.floor(100000+Math.random()*900000);
+      numCommandeSpan.textContent=orderNumber;
+      confirmationPaiement.style.display='none';
+      bonCommande.style.display='block';
+      console.log("Email client:", emailConf.value);
+    });
+  }
+});
+
+/* ---------- Logos prédéfinis ---------- */
+function selectLogoUI(value){
+  const grid = document.getElementById('logoGrid');
+  if(grid){
+    const radios = grid.querySelectorAll('input[name="logoChoice"]');
+    const labels = grid.querySelectorAll('label.logo-item');
+    radios.forEach((r, i)=>{
+      const lab = labels[i];
+      const isMatch = r.value === value;
+      r.checked = isMatch;
+      lab.classList.toggle('selected', isMatch);
+    });
+  }
+  const img = document.getElementById('accAvatarImg'); if(img && value) img.src = value;
+  const navAvatar = document.getElementById('navAvatar'); if(navAvatar && value) navAvatar.src = value;
+}
+function initLogoSelector(){
+  const grid = document.getElementById('logoGrid');
+  if(grid){
+    const radios = grid.querySelectorAll('input[name="logoChoice"]');
+    const labels = grid.querySelectorAll('label.logo-item');
+    labels.forEach((lab, i)=>{
+      lab.addEventListener('click', ()=>{
+        const val = radios[i].value;
+        setTimeout(()=> selectLogoUI(val), 0);
+      });
+    });
+  }
+  const saved = (getUser()?.logo) || localStorage.getItem('zl_logo');
+  if(saved) selectLogoUI(saved);
+}
+function saveLogoChoice(){
+  const chosen = document.querySelector('input[name="logoChoice"]:checked')?.value || "";
+  if(!chosen){ alert("Choisis un logo."); return; }
+  localStorage.setItem('zl_logo', chosen);
+  const u=getUser(); if(u){ u.logo=chosen; setUser(u); }
+  selectLogoUI(chosen);
+  const msg=document.getElementById('saveMsg');
+  msg.textContent='Logo enregistré !';
+  msg.style.display='block';
+  setTimeout(()=> msg.style.display='none', 1500);
+  updateAccountHeader();
+  updateAuthButtons();
+}
+
+/* ---------- Logo personnalisé (upload) ---------- */
+const MAX_CUSTOM_SIZE = 1024*1024; // 1 Mo
+function onCustomLogoChange(e){
+  const file=e.target.files?.[0];
+  if(!file) return;
+  if(file.size > MAX_CUSTOM_SIZE){
+    alert("Fichier trop volumineux (max 1 Mo).");
+    e.target.value='';
+    return;
+  }
+  const reader=new FileReader();
+  reader.onload=()=>{
+    const preview=document.getElementById('customLogoPreview');
+    preview.src=reader.result;
+    preview.style.display='block';
+  };
+  reader.readAsDataURL(file);
+}
+function useCustomLogo(){
+  const preview=document.getElementById('customLogoPreview');
+  if(!preview || !preview.src || preview.style.display==='none'){
+    alert("Importe d'abord une image.");
+    return;
+  }
+  const data=preview.src; // Data URL
+  localStorage.setItem('zl_logo', data);
+  const u=getUser(); if(u){ u.logo=data; setUser(u); }
+  selectLogoUI(data);
+  const msg=document.getElementById('saveMsg');
+  msg.textContent='Logo personnalisé enregistré !';
+  msg.style.display='block';
+  setTimeout(()=>{ msg.style.display='none'; msg.textContent='Logo enregistré !'; }, 1500);
+  updateAccountHeader();
+  updateAuthButtons();
+}
+
+/* ---------- Infos personnelles : afficher / éditer ---------- */
+function fillPersonalInfoView(u){
+  const vFirst = document.getElementById('vFirstName');
+  const vLast  = document.getElementById('vLastName');
+  const vAddr  = document.getElementById('vAddress');
+  const vPhone = document.getElementById('vPhone');
+  const vEmail = document.getElementById('vEmail');
+  if(!vFirst) return;
+
+  vFirst.textContent = u.firstName || '—';
+  vLast.textContent  = u.lastName  || '—';
+  vAddr.textContent  = u.address   || '—';
+  vPhone.textContent = u.phone     || '—';
+  vEmail.textContent = u.email     || '—';
+}
+function editPersonalInfo(){
+  const u = getUser() || {};
+  document.getElementById('infoView').style.display='none';
+  document.getElementById('infoEdit').style.display='block';
+  document.getElementById('iFirstName').value = u.firstName || '';
+  document.getElementById('iLastName').value  = u.lastName  || '';
+  document.getElementById('iAddress').value   = u.address   || '';
+  document.getElementById('iPhone').value     = u.phone     || '';
+  document.getElementById('iEmail').value     = u.email     || '';
+}
+function cancelEdit(){
+  document.getElementById('infoEdit').reset?.();
+  document.getElementById('infoEdit').style.display='none';
+  document.getElementById('infoView').style.display='block';
+}
+function passwordStrongEnough(pwd){
+  return /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{8,}$/.test(pwd);
+}
+async function savePersonalInfo(e){
+  e.preventDefault();
+  const u = getUser() || {};
+  u.firstName = document.getElementById('iFirstName').value.trim();
+  u.lastName  = document.getElementById('iLastName').value.trim();
+  u.address   = document.getElementById('iAddress').value.trim();
+  u.phone     = document.getElementById('iPhone').value.trim();
+  u.email     = document.getElementById('iEmail').value.trim();
+
+  if(!u.firstName || !u.lastName || !u.address || !u.phone || !u.email){
+    alert("Merci de remplir tous les champs."); return;
   }
 
-  function showRegisterForm() {
-    document.getElementById('loginForm').style.display = 'none';
-    document.getElementById('registerForm').style.display = 'block';
-  }
+  const oldPass = document.getElementById('iOldPass').value;
+  const newPass = document.getElementById('iNewPass').value;
+  const newPass2= document.getElementById('iNewPass2').value;
 
-  function showLoginForm() {
-    document.getElementById('registerForm').style.display = 'none';
-    document.getElementById('loginForm').style.display = 'block';
-  }
-
-  function submitRegister(event) {
-    event.preventDefault();
-
-    const email = document.getElementById('regEmail').value;
-    const password = document.getElementById('regPassword').value;
-    const confirmPassword = document.getElementById('regPasswordConfirm').value;
-
-    if(password !== confirmPassword) {
-      alert("Les mots de passe ne correspondent pas.");
+  if(newPass || newPass2 || oldPass){
+    if(!oldPass || !newPass || !newPass2){
+      alert("Pour changer le mot de passe, remplis les 3 champs."); return;
+    }
+    if(newPass !== newPass2){ alert("La confirmation du mot de passe ne correspond pas."); return; }
+    if(!passwordStrongEnough(newPass)){
+      alert("Mot de passe trop faible.\nMin 8 car., avec majuscule, minuscule, chiffre et caractère spécial.");
       return;
     }
-
-    alert("Compte créé avec succès (fonction fictive). Vous pouvez maintenant vous connecter.");
-    showLoginForm();
+    if(u.passwordHash){
+      const oldHash = await hashString(oldPass);
+      if(oldHash !== u.passwordHash){
+        alert("Ancien mot de passe incorrect."); return;
+      }
+    }
+    u.passwordHash = await hashString(newPass);
   }
-</script>
+
+  setUser(u);
+  fillPersonalInfoView(u);
+  updateAccountHeader();
+  cancelEdit();
+  const msg=document.getElementById('saveMsg');
+  msg.textContent='Informations mises à jour !';
+  msg.style.display='block';
+  setTimeout(()=>{ msg.style.display='none'; msg.textContent='Logo enregistré !'; }, 1500);
+}
+function deleteAccount(){
+  const u = getUser();
+  if(!u){ return; }
+  const sure = prompt(
+    "⚠️ Supprimer votre compte va effacer vos données locales (démo).\n" +
+    "Pour confirmer, tapez votre pseudo exactement :"
+  );
+  if(sure === null) return;
+  if(sure !== (u.username||"")){
+    alert("Confirmation incorrecte. Suppression annulée.");
+    return;
+  }
+  localStorage.removeItem('zl_user');
+  localStorage.removeItem('zl_logo');
+  alert("Votre compte a bien été supprimé (données locales effacées).");
+  updateAuthButtons();
+  const firstLink = document.querySelector('nav .nav-links a');
+  if(firstLink){
+    const id = firstLink.getAttribute('onclick').match(/'([^']+)'/)[1];
+    showSection(id, firstLink);
+  }
+}
+
+/* ---------- Chargement initial ---------- */
+window.addEventListener('load', ()=>{
+  const firstLink=document.querySelector('nav .nav-links a');
+  if(firstLink){
+    const id = firstLink.getAttribute('onclick').match(/'([^']+)'/)[1];
+    showSection(id, firstLink);
+  }
+  updateAuthButtons();
+  updateAccountHeader();
+  initLogoSelector();
+
+  const customInput=document.getElementById('customLogoInput');
+  if(customInput) customInput.addEventListener('change', onCustomLogoChange);
+});
+  </script>
 </head>
 <body>
+
+  <!-- ===== Vidéo de fond globale ===== -->
+  <video autoplay muted loop playsinline id="bg-video">
+    <source src="c:\Users\mike5\Downloads\0-2455_modern-warfare-going-dark.mp4" type="video/mp4">
+    Votre navigateur ne supporte pas la vidéo HTML5.
+  </video>
 
 <header>
   <nav>
@@ -415,49 +577,45 @@ function forgotPassword() {
       <a href="#" onclick="showSection('reseaux', this); return false;">Nos réseaux</a>
       <a href="#" onclick="showSection('partenariats', this); return false;">Partenariats</a>
       <a href="#" onclick="showSection('recrutement', this); return false;">Recrutement</a>
-      <a href="#" onclick="showSection('avis client', this); return false;">Avis client</a>
-      
+      <a href="#" onclick="showSection('avis', this); return false;">Avis client</a>
     </div>
-    <a href="#" class="login-button" onclick="toggleLoginPopup(); return false;">Se connecter</a>
 
+    <!-- À droite : bouton Se connecter OU avatar + pseudo -->
+    <span id="authBtnContainer" style="display:flex;align-items:center;gap:10px">
+      <a id="loginBtn" href="#" class="login-button" onclick="toggleLoginPopup(); return false;">Se connecter</a>
+
+      <button id="navAvatarBtn"
+        onclick="showSection('moncompte'); updateAccountHeader(); return false;">
+        <img id="navAvatar" src="https://via.placeholder.com/28x28?text=Z" alt="Avatar">
+        <span id="navAccountLabel">Utilisateur</span>
+      </button>
+    </span>
   </nav>
   <h1>ZiiLoW Esport</h1>
 </header>
 
-<section id="apropos">
+<!-- ===== À PROPOS ===== -->
+<section id="apropos" class="active">
   <h2>À propos de notre équipe eSport</h2>
-  <p>
-
-Fondée en juillet 2024, notre équipe eSport est née d’une passion commune pour la compétition et l’excellence, avec un premier focus sur le jeu Call of Duty. Depuis sa création, notre ambition est claire : faire grandir l’équipe pour atteindre les plus hauts niveaux de compétition et s’imposer comme une référence incontournable dans le paysage eSportif.
-
-Nous misons sur un esprit d’équipe solide, une discipline rigoureuse et une volonté constante d’amélioration. Chaque membre apporte son talent et son engagement, contribuant à bâtir une structure professionnelle, dynamique et tournée vers la réussite.
-
-Au-delà de la compétition, nous souhaitons aussi construire une communauté engagée et fidèle, en partageant nos valeurs de fair-play, de respect et de dépassement de soi.
-
-Notre objectif : propulser notre équipe sur la scène nationale et internationale, gagner en visibilité et devenir un acteur majeur de l’eSport, tout en offrant à nos joueurs un environnement propice à leur épanouissement et à leur progression.
-
-Rejoignez-nous dans cette aventure ambitieuse, car ensemble, nous allons écrire l’avenir de l’eSport.
-  </p>
+  <p>Fondée en juillet 2024, notre équipe eSport est née d’une passion commune pour la compétition et l’excellence, avec un premier focus sur Call of Duty. Notre ambition est claire : atteindre les plus hauts niveaux de compétition et construire une communauté engagée. Rejoignez-nous dans cette aventure !</p>
 </section>
 
+<!-- ===== BOUTIQUE ===== -->
 <section id="boutique">
   <h2>Boutique</h2>
   <div class="produits">
-
     <div class="produit">
-      <h3>Maillot ZiiLoW</h3>
-      <img src="https://via.placeholder.com/250x250?text=Maillot+ZiiLoW" alt="Maillot ZiiLoW Esport" />
-      <p>Maillot officiel de l'équipe ZiiLoW Esport, disponible en toutes tailles.</p>
+      <h3>Maillot Officiel ZiiLoW eSport</h3>
+      <img src="https://i.postimg.cc/tR3g7My2/raw-Photoroom.png" alt="Maillot ZiiLoW Esport" />
+      <p>Maillot officiel de l’équipe ZiiLoW Esport, alliant confort et style, disponible dans toutes les tailles.</p>
       <button class="btnPayer" data-prix="90">Payer 90 € avec PayPal</button>
     </div>
-
     <div class="produit">
-      <h3>Coque de téléphone ZiiLoW</h3>
-      <img src="https://via.placeholder.com/250x250?text=Coque+ZiiLoW" alt="Coque ZiiLoW Esport" />
-      <p>Coque de téléphone résistante et design ZiiLoW, compatible avec plusieurs modèles.</p>
+      <h3>Coque Officielle ZiiLoW </h3>
+      <img src="https://i.postimg.cc/qqdGk5r9/Capture-Photoroom.png" alt="Coque ZiiLoW Esport" />
+      <p>Coque de téléphone ZiiLoW, à la fois robuste et élégante, compatible avec une large gamme de modèles.</p>
       <button class="btnPayer" data-prix="45">Payer 45 € avec PayPal</button>
     </div>
-
   </div>
 
   <div id="confirmationPaiement" style="display:none; margin-top:20px;">
@@ -472,109 +630,291 @@ Rejoignez-nous dans cette aventure ambitieuse, car ensemble, nous allons écrire
     <p>Merci pour votre achat.</p>
     <p>Numéro de commande : <span id="numCommande"></span></p>
     <p>Conservez ce numéro et contactez-nous sur Discord pour valider votre commande.</p>
-    <p>Merci de bien vouloir nous fournir votre nom, prénom, adresse email, numéro de téléphone et adresse postale afin que nous puissions expédier votre commande. Vous aurez également la possibilité de choisir le nom qui sera inscrit sur le produit acheté au moment de la livraison.</p>
+    <p>Merci de bien vouloir nous fournir vos informations d’expédition et le nom à inscrire le cas échéant.</p>
   </div>
 </section>
 
-<script>
-  const btnPayers = document.querySelectorAll('.btnPayer');
-  const confirmationPaiement = document.getElementById('confirmationPaiement');
-  const bonCommande = document.getElementById('bonCommande');
-  const btnGenererBon = document.getElementById('btnGenererBon');
-  const numCommandeSpan = document.getElementById('numCommande');
-  const emailConf = document.getElementById('emailConf');
-
-  btnPayers.forEach(btn => {
-    btn.addEventListener('click', () => {
-      const prix = btn.getAttribute('data-prix');
-      // Ouvre PayPal dans un nouvel onglet avec le prix correspondant
-      window.open(`https://www.paypal.me/ziilowesport/${prix}`, '_blank');
-      // Affiche la section confirmation paiement
-      confirmationPaiement.style.display = 'block';
-      bonCommande.style.display = 'none';
-      emailConf.value = ''; // reset input email
-    });
-  });
-
-  btnGenererBon.addEventListener('click', () => {
-    if (!emailConf.value.trim()) {
-      alert("Merci de saisir votre email.");
-      return;
-    }
-    // Génération d'un numéro de commande aléatoire
-    const orderNumber = Math.floor(100000 + Math.random() * 900000);
-    numCommandeSpan.textContent = orderNumber;
-    confirmationPaiement.style.display = 'none';
-    bonCommande.style.display = 'block';
-
-    console.log("Email client:", emailConf.value);
-  });
-</script>
-
-  </div>
-</section>
-
+<!-- ===== CONTACT ===== -->
 <section id="contact">
   <h2>Contact</h2>
   <ul class="contact-list">
     <li>Email principal : <a href="mailto:ziilowgaming10@gmail.com" style="color:#00bfff;">ziilowgaming10@gmail.com</a></li>
   </ul>
   <p>
-    Rejoignez-nous aussi sur Discord : 
+    Rejoignez-nous aussi sur Discord :
     <a href="https://discord.gg/XHQebk4SwQ" target="_blank" rel="noopener noreferrer" class="discord-link" title="Rejoindre Discord ZiiLoW Esport">
       <img src="https://cdn-icons-png.flaticon.com/512/2111/2111370.png" alt="Discord" />
     </a>
   </p>
 </section>
 
+<!-- ===== RÉSEAUX ===== -->
 <section id="reseaux">
   <h2>Nos réseaux</h2>
-  <a href="https://discord.gg/XHQebk4SwQ" target="_blank" rel="noopener noreferrer" class="social-link" title="Discord">
-    <img src="https://cdn-icons-png.flaticon.com/512/2111/2111370.png" alt="Discord" />
-    Discord
-  </a><br/>
+  
   <a href="https://www.instagram.com/ziilowesport" target="_blank" rel="noopener noreferrer" class="social-link" title="Instagram">
-    <img src="https://cdn-icons-png.flaticon.com/512/174/174855.png" alt="Instagram" />
-    Instagram
+    <img src="https://cdn-icons-png.flaticon.com/512/174/174855.png" alt="Instagram" /> Instagram
   </a><br/>
+
   <a href="https://twitter.com/ziilowesport" target="_blank" rel="noopener noreferrer" class="social-link" title="Twitter">
-    <img src="https://cdn-icons-png.flaticon.com/512/733/733579.png" alt="Twitter" />
-    Twitter
+    <img src="https://cdn-icons-png.flaticon.com/512/733/733579.png" alt="Twitter" /> Twitter
   </a><br/>
+
   <a href="https://www.tiktok.com/@ziilowesport?_t=ZN-8ymeG8ID6U2&_r=1" target="_blank" rel="noopener noreferrer" class="social-link" title="TikTok">
-    <img src="https://cdn-icons-png.flaticon.com/512/3046/3046126.png" alt="TikTok" />
-    TikTok
+    <img src="https://cdn-icons-png.flaticon.com/512/3046/3046126.png" alt="TikTok" /> TikTok
+  </a><br/>
+
+  <!-- Discord -->
+  <a href="https://discord.gg/XHQebk4SwQ" target="_blank" rel="noopener noreferrer" class="social-link" title="Discord">
+    <img src="https://cdn-icons-png.flaticon.com/512/2111/2111370.png" alt="Discord" /> Discord
   </a>
 </section>
 
-
-</section> <!-- fin Nos réseaux -->
-
+<!-- ===== PARTENARIATS ===== -->
 <section id="partenariats">
   <h2>Nos Partenaires</h2>
   <div class="produits">
     <div class="produit">
-      <img src="https://sdmntprukwest.oaiusercontent.com/files/00000000-3ba4-6243-81fb-fa82c9498593/raw?se=2025-08-11T20%3A53%3A50Z&sp=r&sv=2024-08-04&sr=b&scid=073faf41-8770-55b3-b7e1-0c6c89337a9a&skoid=d9a3f0e9-8380-4267-a144-3f27388a5c5d&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2025-08-11T18%3A23%3A40Z&ske=2025-08-12T18%3A23%3A40Z&sks=b&skv=2024-08-04&sig=QVuqC190VRZbievt5nELAb3WA4Go4c2GweYS5a5FQRU%3D" alt="Logo Partenaire 1" />
-      <h3>Partenaire 1</h3>
-      <p>Instant Gaming Votre boutique de jeux vidéo en ligne fiable et rapide, offrant des clés à prix réduits pour toutes vos plateformes préférées. Partenaire de confiance pour des sessions de jeu au top !</p>
-      <a href="https://www.instant-gaming.com/?igr=ZiiLoWClan" target="_blank">
-        <button>Visiter le site</button>
-      </a>
+      <img src="https://i.postimg.cc/GpD12sry/instant-gaming-logo-graphic-design-word-text-label-alphabet-transparent-png-1495304-Photoroom.png" alt="Logo Partenaire 1" />
+      <h3>Instant Gaming</h3>
+      <p>Votre boutique de jeux vidéo en ligne fiable et rapide, offrant des clés à prix réduits.</p>
+      <a href="https://www.instant-gaming.com/?igr=ZiiLoWClan" target="_blank"><button>Visiter le site</button></a>
     </div>
     <div class="produit">
-      <img src="https://via.placeholder.com/250x250?text=Partenaire+2" alt="Logo Partenaire 2" />
-      <h3>Partenaire 2</h3>
-      <p>Description rapide de ce partenaire.</p>
-      <a href="https://site-partenaire2.com" target="_blank">
-        <button>Visiter le site</button>
-      </a>
+      <img src="https://i.postimg.cc/fbxGcnP2/Capture.png" alt="Logo Partenaire 2" />
+      <h3>AimOver</h3>
+      <p>AimOver est une boutique en ligne française spécialisée dans le merchandising esport : maillots, sweats, tapis de souris et autres accessoires personnalisés pour les passionnés de gaming.</p>
+      <a href="https://www.aimover.fr/" target="_blank"><button>Visiter le site</button></a>
     </div>
   </div>
 </section>
 
+<style>
+/* --- styles de base produits --- */
+.produits{display:flex;gap:20px;flex-wrap:wrap;justify-content:center}
+.produit{background:#222;padding:10px;border-radius:8px;width:200px;box-shadow:0 0 8px #00bfff80;text-align:center;display:flex;flex-direction:column}
+.produit h3{margin:10px 0 5px 0;color:#00bfff;min-height:2.6em}
+.produit img{width:80%;height:180px;object-fit:contain;border-radius:6px;margin:6px auto 8px}
+.produit p{font-size:.9rem;margin-bottom:15px;min-height:60px}
+.produit button,.produit form button{background:#00bfff;border:none;color:#121212;padding:10px 15px;font-weight:bold;border-radius:5px;cursor:pointer;transition:background-color .3s ease;margin-top:auto}
+.produit button:hover,.produit form button:hover{background:#008fcf}
+/* --- styles spécifiques partenaires --- */
+#partenariats .produit img{width:100%;height:90px;object-fit:contain;margin:10px auto 12px}
+#partenariats .produit p{min-height:100px}
+#partenariats .produit a:last-child{display:block;margin-top:auto}
+#partenariats .produit a:last-child button{width:100%}
+</style>
 
+<!-- ===== RECRUTEMENT ===== -->
+<section id="recrutement">
+  <h2>Recrutement</h2>
+  <form id="formRecrutement" style="max-width:500px; margin:auto;">
+    <label for="nom">Nom :</label><br/>
+    <input type="text" id="nom" required style="width:100%; padding:8px; margin-bottom:10px;"/>
 
-<!-- Popup Connexion / Inscription -->
+    <label for="emailRecrut">Email :</label><br/>
+    <input type="email" id="emailRecrut" required style="width:100%; padding:8px; margin-bottom:10px;"/>
+
+    <label for="motivation">Pourquoi souhaites-tu rejoindre notre équipe e-sport ?</label><br/>
+    <textarea id="motivation" required style="width:100%; padding:8px; margin-bottom:10px;"></textarea>
+
+    <label for="jeuPrincipal">Quel est ton jeu principal et ton niveau actuel ?</label><br/>
+    <input type="text" id="jeuPrincipal" required style="width:100%; padding:8px; margin-bottom:10px;" placeholder="Ex : Call Of Duty - Diamant"/>
+
+    <label for="experienceCompet">Ton expérience en compétition ?</label><br/>
+    <textarea id="experienceCompet" style="width:100%; padding:8px; margin-bottom:10px;"></textarea>
+
+    <label for="roleEquipe">Rôle habituel :</label><br/>
+    <input type="text" id="roleEquipe" style="width:100%; padding:8px; margin-bottom:10px;" placeholder="Support, Attaquant, Stratège..."/>
+
+    <label for="disponibilite">Disponibilités :</label><br/>
+    <input type="text" id="disponibilite" required style="width:100%; padding:8px; margin-bottom:10px;" placeholder="Ex : Soirées en semaine, weekends..."/>
+
+    <button type="submit" class="btn">Envoyer</button>
+  </form>
+</section>
+
+<script>
+const form = document.getElementById('formRecrutement');
+form.addEventListener('submit', function(event){
+  event.preventDefault();
+  const nom=document.getElementById('nom').value;
+  if(confirm("Merci pour ta candidature, "+nom+" !\n\nClique sur OK pour rejoindre notre Discord.")){
+    window.location.href="https://discord.gg/XHQebk4SwQ";
+  }
+});
+</script>
+
+<!-- ===== AVIS ===== -->
+<section id="avis">
+  <h2>Avis client</h2>
+  <div id="avisList" style="margin-bottom:20px;"></div>
+  <form id="formAvis">
+    <label for="nomAvis">Nom :</label><br/>
+    <input type="text" id="nomAvis" required placeholder="Votre prénom ou pseudo" style="width:100%; padding:8px; margin-bottom:10px;" />
+    <label for="texteAvis">Votre avis :</label><br/>
+    <textarea id="texteAvis" rows="4" required placeholder="Écrivez votre avis ici..." style="width:100%; padding:8px; margin-bottom:10px;"></textarea>
+    <label>Note :</label><br/>
+    <div id="stars" style="margin-bottom:10px; font-size:22px; cursor:pointer; color:#888;">
+      <span data-value="1">★</span><span data-value="2">★</span><span data-value="3">★</span><span data-value="4">★</span><span data-value="5">★</span>
+    </div>
+    <button type="submit" class="btn">Envoyer</button>
+  </form>
+</section>
+
+<script>
+const formAvis=document.getElementById('formAvis');
+const avisList=document.getElementById('avisList');
+const starElems=document.querySelectorAll('#stars span');
+let selectedRating=0;
+function ajouterAvis(nom, texte, rating){
+  const divAvis=document.createElement('div');
+  divAvis.style.background='#222';divAvis.style.padding='10px';divAvis.style.marginBottom='10px';
+  divAvis.style.borderRadius='6px';divAvis.style.boxShadow='0 0 8px #00bfff80';
+  let etoiles='★'.repeat(rating)+'☆'.repeat(5-rating);
+  divAvis.innerHTML=`<strong style="color:#00bfff;">${nom}</strong><br/><span style="color:gold; font-size:18px;">${etoiles}</span><p style="margin:5px 0;">${texte}</p>`;
+  avisList.prepend(divAvis);
+}
+starElems.forEach(star=>{
+  star.addEventListener('mouseover',()=>colorStars(parseInt(star.dataset.value)));
+  star.addEventListener('mouseout',()=>colorStars(selectedRating));
+  star.addEventListener('click',()=>{selectedRating=parseInt(star.dataset.value);colorStars(selectedRating);});
+});
+function colorStars(r){ starElems.forEach((s,i)=>{ s.style.color=(i<r)?'gold':'#888'; }); }
+formAvis.addEventListener('submit',(e)=>{
+  e.preventDefault();
+  const nom=document.getElementById('nomAvis').value.trim();
+  const texte=document.getElementById('texteAvis').value.trim();
+  if(!nom||!texte||selectedRating===0){ alert("Merci de remplir tous les champs et de donner une note."); return; }
+  ajouterAvis(nom,texte,selectedRating);
+  formAvis.reset(); selectedRating=0; colorStars(0);
+});
+ajouterAvis("Marie","Super équipe, j'adore suivre leurs compétitions !",5);
+ajouterAvis("Lucas","Très bonne boutique, les produits sont de qualité.",4);
+</script>
+
+<!-- ===== MON COMPTE ===== -->
+<section id="moncompte">
+  <h2>Mon compte</h2>
+
+  <!-- En-tête compte -->
+  <div class="account-card" style="display:flex;justify-content:space-between;align-items:center">
+    <span>Connecté en tant que <strong id="accDisplayTop">—</strong></span>
+    <button onclick="logout()" class="danger">Se déconnecter</button>
+  </div>
+
+  <!-- Profil -->
+  <div class="account-card">
+    <div class="account-row">
+      <div class="avatar"><img id="accAvatarImg" src="https://via.placeholder.com/150x150?text=Logo" alt="Logo choisi"></div>
+      <div>
+        <div><strong>Pseudo :</strong> <span id="accUsername">—</span></div>
+        <div style="margin-top:6px;"><strong>ID unique :</strong> <span id="accId">—</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Infos personnelles + MDP + suppression -->
+  <div class="account-card">
+    <h3 style="margin-top:0;color:#00bfff">Informations personnelles</h3>
+
+    <!-- Mode affichage -->
+    <div id="infoView">
+      <ul class="info-list">
+        <li><strong>Prénom :</strong> <span id="vFirstName">—</span></li>
+        <li><strong>Nom :</strong> <span id="vLastName">—</span></li>
+        <li><strong>Adresse :</strong> <span id="vAddress">—</span></li>
+        <li><strong>Téléphone :</strong> <span id="vPhone">—</span></li>
+        <li><strong>Email :</strong> <span id="vEmail">—</span></li>
+        <li><strong>Mot de passe :</strong> <span>•••••• (non affiché)</span></li>
+      </ul>
+      <div class="info-actions">
+        <button onclick="editPersonalInfo()" class="btn">Modifier</button>
+        <button onclick="deleteAccount()" class="danger">Supprimer mon compte</button>
+      </div>
+    </div>
+
+    <!-- Mode édition -->
+    <form id="infoEdit" class="info-form" style="display:none" onsubmit="savePersonalInfo(event)">
+      <label for="iFirstName">Prénom</label>
+      <input id="iFirstName" type="text" required style="width:100%;padding:8px;border-radius:6px;border:1px solid #333;background:#111;color:#eee">
+
+      <label for="iLastName">Nom</label>
+      <input id="iLastName" type="text" required style="width:100%;padding:8px;border-radius:6px;border:1px solid #333;background:#111;color:#eee">
+
+      <label for="iAddress">Adresse</label>
+      <input id="iAddress" type="text" required style="width:100%;padding:8px;border-radius:6px;border:1px solid #333;background:#111;color:#eee">
+
+      <label for="iPhone">Téléphone</label>
+      <input id="iPhone" type="tel" required placeholder="+33 6 12 34 56 78" style="width:100%;padding:8px;border-radius:6px;border:1px solid #333;background:#111;color:#eee">
+
+      <label for="iEmail">Email</label>
+      <input id="iEmail" type="email" required style="width:100%;padding:8px;border-radius:6px;border:1px solid #333;background:#111;color:#eee">
+
+      <hr style="margin:16px 0;border:0;border-top:1px solid #333">
+      <div><strong>Changer le mot de passe</strong></div>
+      <label for="iOldPass">Ancien mot de passe</label>
+      <input id="iOldPass" type="password" placeholder="Votre ancien mot de passe" style="width:100%;padding:8px;border-radius:6px;border:1px solid #333;background:#111;color:#eee">
+
+      <label for="iNewPass">Nouveau mot de passe</label>
+      <input id="iNewPass" type="password" placeholder="Min 8 car., maj, min, chiffre, spécial" style="width:100%;padding:8px;border-radius:6px;border:1px solid #333;background:#111;color:#eee">
+
+      <label for="iNewPass2">Confirmer le nouveau mot de passe</label>
+      <input id="iNewPass2" type="password" placeholder="Répéter le nouveau mot de passe" style="width:100%;padding:8px;border-radius:6px;border:1px solid #333;background:#111;color:#eee">
+
+      <div class="info-actions">
+        <button type="submit" class="btn">Enregistrer</button>
+        <button type="button" onclick="cancelEdit()" class="btn" style="background:#555;color:#eee">Annuler</button>
+      </div>
+    </form>
+  </div>
+
+  <!-- Choix d'un logo officiel -->
+  <div class="account-card">
+    <h3 style="margin-top:0;color:#00bfff">Choisir mon logo</h3>
+    <p style="margin-top:0">Sélectionne un logo officiel ZiiLoW à afficher sur ton profil.</p>
+
+    <div class="logo-grid" id="logoGrid">
+      <!-- Logos … (inchangés) -->
+      <input class="vh" type="radio" name="logoChoice" id="logo1" value="https://wallpapers.com/images/hd/cool-xbox-profile-pictures-9dtcc745il694rjs.jpg">
+      <label class="logo-item" for="logo1">
+        <img referrerpolicy="no-referrer" src="https://wallpapers.com/images/hd/cool-xbox-profile-pictures-9dtcc745il694rjs.jpg" alt="Logo 1">
+      </label>
+
+      <input class="vh" type="radio" name="logoChoice" id="logo2" value="https://i0.wp.com/wallpaperaccess.com/full/2786608.jpg">
+      <label class="logo-item" for="logo2">
+        <img referrerpolicy="no-referrer" src="https://i0.wp.com/wallpaperaccess.com/full/2786608.jpg" alt="Logo 2">
+      </label>
+
+      <input class="vh" type="radio" name="logoChoice" id="logo3" value="https://i.pinimg.com/originals/57/ee/8b/57ee8b102a4bb9567ce884560c374619.png">
+      <label class="logo-item" for="logo3">
+        <img referrerpolicy="no-referrer" src="https://i.pinimg.com/originals/57/ee/8b/57ee8b102a4bb9567ce884560c374619.png" alt="Logo 3">
+      </label>
+
+      <input class="vh" type="radio" name="logoChoice" id="logo4" value="https://img.freepik.com/premium-vector/logo-kid-gamer_573604-730.jpg">
+      <label class="logo-item" for="logo4">
+        <img referrerpolicy="no-referrer" src="https://img.freepik.com/premium-vector/logo-kid-gamer_573604-730.jpg" alt="Logo 4">
+      </label>
+    </div>
+
+    <button onclick="saveLogoChoice()" class="btn" style="margin-top:12px">Enregistrer mon logo</button>
+    <div id="saveMsg" class="saveMsg">Logo enregistré !</div>
+  </div>
+
+  <!-- Logo personnalisé (upload) -->
+  <div class="account-card">
+    <h3 style="margin-top:0;color:#00bfff">Importer mon propre logo</h3>
+    <p>PNG/JPG — taille max 1 Mo. Tu pourras l’utiliser comme avatar immédiatement.</p>
+    <input type="file" id="customLogoInput" accept="image/*">
+    <img id="customLogoPreview" alt="Aperçu logo importé">
+    <div>
+      <button onclick="useCustomLogo()" class="btn" style="margin-top:12px">Utiliser ce logo</button>
+    </div>
+  </div>
+</section>
+
+<!-- ===== POPUP Login / Register ===== -->
+<div id="loginBackdrop" class="modal-backdrop" onclick="hideLoginPopup()"></div>
 <div id="loginPopup">
   <span class="close-btn" onclick="hideLoginPopup()">×</span>
 
@@ -583,11 +923,9 @@ Rejoignez-nous dans cette aventure ambitieuse, car ensemble, nous allons écrire
     <form onsubmit="submitLogin(event)">
       <label for="email">Email :</label>
       <input type="email" id="email" required placeholder="exemple@mail.com" />
-      
       <label for="password">Mot de passe :</label>
       <input type="password" id="password" required placeholder="Votre mot de passe" />
-      
-      <button type="submit">Connexion</button>
+      <button type="submit" class="btn" style="width:100%">Connexion</button>
     </form>
     <a href="#" onclick="forgotPassword(); return false;">Mot de passe oublié ?</a><br/>
     <a href="#" onclick="showRegisterForm(); return false;">Pas encore de compte ? Inscrivez-vous</a>
@@ -596,224 +934,50 @@ Rejoignez-nous dans cette aventure ambitieuse, car ensemble, nous allons écrire
   <div id="registerForm" style="display:none;">
     <h2>S'inscrire</h2>
     <form onsubmit="submitRegister(event)">
-      <label for="regEmail">Email :</label>
+      <label for="regUsername">Pseudo</label>
+      <input type="text" id="regUsername" required placeholder="Ex : MikeZii" />
+
+      <label for="regFirstName">Prénom</label>
+      <input type="text" id="regFirstName" required placeholder="Ex : Marie" />
+
+      <label for="regLastName">Nom</label>
+      <input type="text" id="regLastName" required placeholder="Ex : Dupont" />
+
+      <label for="regAddress">Adresse</label>
+      <input type="text" id="regAddress" required placeholder="N° et rue, ville, code postal" />
+
+      <label for="regPhone">Téléphone</label>
+      <input type="tel" id="regPhone" required placeholder="+33 6 12 34 56 78" />
+
+      <label for="regEmail">Email</label>
       <input type="email" id="regEmail" required placeholder="exemple@mail.com" />
-      
-      <label for="regPassword">Mot de passe :</label>
+
+      <label for="regPassword">Mot de passe</label>
       <input type="password" id="regPassword" required placeholder="Votre mot de passe" />
-      
-      <label for="regPasswordConfirm">Confirmer le mot de passe :</label>
+
+      <label for="regPasswordConfirm">Confirmer le mot de passe</label>
       <input type="password" id="regPasswordConfirm" required placeholder="Confirmez le mot de passe" />
-      
-      <button type="submit">Créer un compte</button>
+
+      <button type="submit" class="btn" style="width:100%">Créer un compte</button>
     </form>
     <a href="#" onclick="showLoginForm(); return false;">Déjà un compte ? Connectez-vous</a>
   </div>
 </div>
 
+<!-- ===== Page MDP oublié ===== -->
 <section id="forgotPasswordPage" style="display:none; max-width: 500px; margin: 40px auto; background: #222; padding: 20px; border-radius: 8px; box-shadow: 0 0 8px #00bfff80; color: #eee;">
   <h2>Réinitialisation du mot de passe</h2>
   <p>Entrez votre email pour recevoir un code de réinitialisation :</p>
   <form id="forgotPasswordForm" onsubmit="submitForgotPasswordPage(event)">
     <input type="email" id="forgotEmailPage" required placeholder="exemple@mail.com" style="width:100%; padding:8px; margin-bottom:15px; border-radius:4px; border:none;" />
-    <button type="submit" style="background:#00bfff; border:none; padding:10px 15px; color:#121212; font-weight:bold; border-radius:5px; cursor:pointer; width:100%;">Envoyer le code</button>
+    <button type="submit" class="btn" style="width:100%">Envoyer le code</button>
   </form>
-  <button onclick="returnToHome()" style="margin-top: 15px; background:#008fcf; border:none; padding:8px 12px; color:#eee; font-weight:bold; border-radius:5px; cursor:pointer;">Retour</button>
+  <button onclick="returnToHome()" class="btn" style="background:#008fcf;color:#eee">Retour</button>
 </section>
-
-
 
 <footer>
   &copy; 2025 ZiiLoW Esport. Tous droits réservés.
 </footer>
 
-
 </body>
 </html>
-
-
-<section id="recrutement">
-  <h2>Recrutement</h2>
-  <form id="formRecrutement" style="max-width:500px; margin:auto;">
-    <label for="nom">Nom :</label><br/>
-    <input type="text" id="nom" name="nom" required style="width:100%; padding:8px; margin-bottom:10px;"/>
-
-<label for="emailRecrut">Email :</label><br/>
-<input type="email" id="emailRecrut" name="emailRecrut" required style="width:100%; padding:8px; margin-bottom:10px;"/>
-
-<label for="motivation">Pourquoi souhaites-tu rejoindre notre équipe e-sport ?</label><br/>
-<textarea id="motivation" name="motivation" required style="width:100%; padding:8px; margin-bottom:10px;"></textarea>
-
-<label for="jeuPrincipal">Quel est ton jeu principal et ton niveau actuel ?</label><br/>
-<input type="text" id="jeuPrincipal" name="jeuPrincipal" required style="width:100%; padding:8px; margin-bottom:10px;" placeholder="Ex : Call Of Duty - Diamant"/>
-
-<label for="experienceCompet">Peux-tu décrire ton expérience en compétition e-sport (tournois, ligues, équipes précédentes) ?</label><br/>
-<textarea id="experienceCompet" name="experienceCompet" style="width:100%; padding:8px; margin-bottom:10px;"></textarea>
-
-<label for="roleEquipe">Quel rôle ou position occupes-tu habituellement dans une équipe ?</label><br/>
-<input type="text" id="roleEquipe" name="roleEquipe" style="width:100%; padding:8px; margin-bottom:10px;" placeholder="Ex : Support, Attaquant, Stratège..."/>
-
-<label for="disponibilite">Quelle est ta disponibilité pour les entraînements et compétitions ?</label><br/>
-<input type="text" id="disponibilite" name="disponibilite" required style="width:100%; padding:8px; margin-bottom:10px;" placeholder="Ex : Soirées en semaine, weekends..."/>
-
-
-    <button type="submit" style="background:#00bfff; border:none; padding:10px 15px; color:#121212; font-weight:bold; border-radius:5px; cursor:pointer;">Envoyer</button>
-  </form>
-</section>
-
-<script>
-  const form = document.getElementById('formRecrutement');
-  form.addEventListener('submit', function(event) {
-    event.preventDefault(); // Empêche l'envoi classique du formulaire
-
-    // Ici tu peux récupérer les données si tu veux les traiter ou envoyer via AJAX
-    const nom = document.getElementById('nom').value;
-    const email = document.getElementById('emailRecrut').value;
-    const motivation = document.getElementById('motivation').value;
-
-    // Optionnel: Tu peux faire une validation ou un envoi AJAX ici
-
-    // Message d'alerte personnalisé avec confirmation
-    const confirmation = confirm(
-      "Merci pour ta candidature, " + nom + " !\n\n" +
-      "Clique sur OK pour rejoindre notre Discord."
-    );
-
-    if (confirmation) {
-      // Remplace ce lien par celui de ton serveur Discord
-      window.location.href = "https://discord.com/channels/1255173859104260127/1255398700092489728";
-    }
-  });
-</script>
-
-
-
-
-
-
-
-
-
-
-<section id="avis client">
-  <h2>Avis client</h2>
-
-  <div id="avisList" style="margin-bottom:20px;">
-    <!-- Les avis s'affichent ici -->
-  </div>
-
-  <form id="formAvis">
-    <label for="nomAvis">Nom :</label><br/>
-    <input type="text" id="nomAvis" required placeholder="Votre prénom ou pseudo" style="width:100%; padding:8px; margin-bottom:10px;" />
-
-    <label for="texteAvis">Votre avis :</label><br/>
-    <textarea id="texteAvis" rows="4" required placeholder="Écrivez votre avis ici..." style="width:100%; padding:8px; margin-bottom:10px;"></textarea>
-
-    <label>Note :</label><br/>
-    <div id="stars" style="margin-bottom:10px; font-size:22px; cursor:pointer; color:#888;">
-      <span data-value="1">★</span>
-      <span data-value="2">★</span>
-      <span data-value="3">★</span>
-      <span data-value="4">★</span>
-      <span data-value="5">★</span>
-    </div>
-
-    <button type="submit" style="background-color:#00bfff; color:#121212; border:none; padding:10px 15px; border-radius:5px; cursor:pointer;">Envoyer</button>
-  </form>
-</section>
-
-<script>
-  const formAvis = document.getElementById('formAvis');
-  const avisList = document.getElementById('avisList');
-  const starsDiv = document.getElementById('stars');
-  const starElems = starsDiv.querySelectorAll('span');
-
-  let selectedRating = 0;
-
-  // Affichage d'un avis
-  function ajouterAvis(nom, texte, rating) {
-    const divAvis = document.createElement('div');
-    divAvis.style.background = '#222';
-    divAvis.style.padding = '10px';
-    divAvis.style.marginBottom = '10px';
-    divAvis.style.borderRadius = '6px';
-    divAvis.style.boxShadow = '0 0 8px #00bfff80';
-
-    let etoiles = '★'.repeat(rating) + '☆'.repeat(5 - rating);
-
-    divAvis.innerHTML = `
-      <strong style="color:#00bfff;">${nom}</strong><br/>
-      <span style="color:gold; font-size:18px;">${etoiles}</span>
-      <p style="margin:5px 0;">${texte}</p>
-    `;
-
-    avisList.prepend(divAvis);
-  }
-
-  // Effet au survol
-  starElems.forEach(star => {
-    star.addEventListener('mouseover', () => {
-      const val = parseInt(star.dataset.value);
-      colorStars(val);
-    });
-
-    star.addEventListener('mouseout', () => {
-      colorStars(selectedRating);
-    });
-
-    star.addEventListener('click', () => {
-      selectedRating = parseInt(star.dataset.value);
-      colorStars(selectedRating);
-    });
-  });
-
-  // Colorer les étoiles
-  function colorStars(rating) {
-    starElems.forEach((star, index) => {
-      if (index < rating) {
-        star.style.color = 'gold';
-      } else {
-        star.style.color = '#888';
-      }
-    });
-  }
-
-  // Soumission du formulaire
-  formAvis.addEventListener('submit', (e) => {
-    e.preventDefault();
-    const nom = document.getElementById('nomAvis').value.trim();
-    const texte = document.getElementById('texteAvis').value.trim();
-
-    if (!nom || !texte || selectedRating === 0) {
-      alert("Merci de remplir tous les champs et de donner une note.");
-      return;
-    }
-
-    ajouterAvis(nom, texte, selectedRating);
-
-    // Reset formulaire
-    formAvis.reset();
-    selectedRating = 0;
-    colorStars(0);
-  });
-
-  // Avis par défaut
-  ajouterAvis("Marie", "Super équipe, j'adore suivre leurs compétitions !", 5);
-  ajouterAvis("Lucas", "Très bonne boutique, les produits sont de qualité.", 4);
-</script>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
