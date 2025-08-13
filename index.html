@@ -636,6 +636,407 @@ Que vous soyez joueur passionné, amateur d’eSport ou simple curieux, nous vou
     <p>Conservez ce numéro et contactez-nous sur Discord pour valider votre commande.</p>
     <p>Merci de bien vouloir nous fournir vos informations d’expédition et le nom à inscrire le cas échéant.</p>
   </div>
+
+<!-- ====== TICKET À GRATTER – ZiiLoW ====== -->
+<div id="zlw-scratch" style="margin-top:24px;"></div>
+
+<style>
+  #zlw-scratch{ --panel:#121735; --border:#2a2f63; --text:#eef3ff; --muted:#a9b3d8; color:var(--text); }
+  #zlw-scratch *{ box-sizing:border-box; }
+  #zlw-scratch .app{ display:grid; gap:16px; grid-template-columns:minmax(260px,360px) 420px; align-items:start; }
+  #zlw-scratch .panel{ background:var(--panel); border:1px solid var(--border); border-radius:14px; padding:14px; }
+  #zlw-scratch .controls{ display:flex; gap:8px; flex-wrap:wrap; align-items:center; margin-bottom:10px; }
+  #zlw-scratch .pill{ background:#1b2149; border:1px solid var(--border); border-radius:999px; padding:6px 10px; }
+  #zlw-scratch .btn{ background:#1b2149; color:var(--text); border:1px solid var(--border); padding:10px 14px; border-radius:12px; cursor:pointer; font:inherit; }
+  #zlw-scratch .btn[disabled]{ opacity:.5; cursor:not-allowed; }
+  #zlw-scratch .muted{ color:var(--muted); font-size:.92em; }
+
+  #zlw-scratch .card-wrap{ position:relative; width:420px; height:240px; border-radius:16px; overflow:hidden;
+    box-shadow:0 10px 30px rgba(0,0,0,.35); background:radial-gradient(ellipse at 50% 30%, #172048, #0d1430); border:1px solid var(--border);}
+  #zlw-scratch .card-content{ position:absolute; inset:0; display:grid; place-items:center; padding:18px; text-align:center; }
+  #zlw-scratch .title{ font-weight:800; font-size:22px; letter-spacing:.2px; }
+  #zlw-scratch .prize{ font-weight:900; font-size:28px; margin-top:6px; }
+  #zlw-scratch .tip{ margin-top:8px; color:var(--muted) }
+
+  /* Canvas : patch tactile/souris */
+  #zlw-scratch canvas{
+    position:absolute; inset:0; width:100%; height:100%; display:block; cursor:grab;
+    touch-action:none; user-select:none; -webkit-user-select:none; -ms-touch-action:none;
+  }
+  #zlw-scratch canvas:active{ cursor:grabbing; }
+
+  #zlw-scratch .modal{ position:fixed; inset:0; display:none; align-items:center; justify-content:center; backdrop-filter:blur(2px); background:rgba(0,0,0,.45); z-index:99999; }
+  #zlw-scratch .modal.open{ display:flex; }
+  #zlw-scratch .modal-card{ background:#10163a; border:1px solid var(--border); width:min(90vw, 420px); border-radius:16px; padding:18px; }
+  #zlw-scratch .modal-card h3{ margin:0 0 8px 0; }
+</style>
+
+<script>
+(function(){
+  const DEMO_MODE   = true;
+  const PRICE_LABEL = '3.00 € / tirage';
+  const PAYPAL_LINK = 'https://www.paypal.me/ziilowesport/3.00';
+
+  /* Probas “très dur” (PS5 ~0,1%) */
+  const SEGMENTS = [
+    { label:'Perdu !',           type:'lose',    value:null,        weight:750 },
+    { label:'Porte-Clé Ziilow',  type:'merch',   value:'porte-cle', weight:120 },
+    { label:'Carte Xbox 10 €',   type:'xbox',    value:10,          weight:60  },
+    { label:'Carte PSN 10 €',    type:'psn',     value:10,          weight:60  },
+    { label:'Black Ops 7',       type:'game',    value:'bo7',       weight:9   },
+    { label:'PS5 (TRÈS RARE)',   type:'console', value:'ps5',       weight:1   },
+  ];
+
+  const container = document.getElementById('zlw-scratch');
+  if(!container) return;
+
+  container.innerHTML = `
+    <div class="app">
+      <div class="panel">
+        <div class="controls">
+          <span class="pill" id="sc-status">Statut: non payé</span>
+          <span class="pill" id="sc-price">${PRICE_LABEL}</span>
+        </div>
+        <div class="controls">
+          <button class="btn" id="sc-start" disabled>🪙 Gratter</button>
+          <button class="btn" id="sc-pay">💳 Payer</button>
+          <button class="btn" id="sc-code">🎁 Code</button>
+        </div>
+
+        <div class="panel" style="margin-top:10px;">
+          <b>Lots</b>
+          <ul id="sc-list" style="margin:8px 0 0 18px"></ul>
+          <p id="sc-infos" class="muted" style="margin-top:8px">
+            📝 <b>Important :</b> en cas de gain, faites une <b>capture d’écran</b> du résultat puis
+            indiquez votre <b>numéro de commande</b> sur notre
+            <a href="https://discord.gg/XHQebk4SwQ" target="_blank" rel="noopener" style="color:#8bc7ff">Discord</a>
+            afin que nous puissions <b>vérifier et valider</b> votre gain.
+          </p>
+        </div>
+      </div>
+
+      <div class="card-wrap">
+        <div class="card-content">
+          <div>
+            <div class="title">Ticket ZiiLoW</div>
+            <div class="prize" id="sc-prize">Payez/entrez un code<br>puis grattez !</div>
+            <div class="tip">Astuce : grattez à la souris ou au doigt</div>
+          </div>
+        </div>
+        <canvas id="sc-canvas" width="840" height="480" aria-label="Ticket à gratter"></canvas>
+      </div>
+    </div>
+
+    <div class="modal" id="sc-modal">
+      <div class="modal-card">
+        <h3 id="sc-modalTitle"></h3>
+        <div id="sc-modalBody" class="muted"></div>
+        <div style="margin-top:12px;display:flex;justify-content:flex-end;gap:8px">
+          <button class="btn" id="sc-modalOk">OK</button>
+        </div>
+      </div>
+    </div>
+  `;
+
+  // --- État & refs
+  let eligible = 0;              // ⛔️ aucun tirage tant qu'il n'a pas payé/entré un code
+  let currentPrize = null;
+  let scratched = false;
+  let revealedThisRound = false;
+
+  // file des tickets PAYÉS (n° de commande en attente)
+  let paidOrderQueue = [];
+  // numéro de commande associé au tirage en cours (si payé)
+  let currentOrderNo = null;
+
+  const $ = s => container.querySelector(s);
+  const btnStart = $('#sc-start'), btnPay = $('#sc-pay'), btnCode = $('#sc-code');
+  const pill = $('#sc-status'), prizeText = $('#sc-prize'), list = $('#sc-list');
+  const modal = $('#sc-modal'), modalTitle = $('#sc-modalTitle'), modalBody = $('#sc-modalBody'), modalOk = $('#sc-modalOk');
+  const canvas = $('#sc-canvas'), ctx = canvas.getContext('2d');
+
+  // HiDPI net
+  const dpr = Math.max(1, window.devicePixelRatio||1);
+  canvas.width = 420*dpr*2; canvas.height = 240*dpr*2;
+  canvas.style.width='420px'; canvas.style.height='240px';
+  ctx.scale(dpr,dpr);
+
+  // UI
+  function updateUI(){
+    const canPlay = (eligible > 0) && (paidOrderQueue.length > 0);
+    btnStart.disabled = !canPlay;
+    pill.textContent = canPlay
+      ? `Statut: payé • ${eligible} tirage${eligible>1?'s':''} disponible${eligible>1?'s':''}`
+      : 'Statut: non payé';
+  }
+function renderLots(){
+  list.innerHTML = '';
+  SEGMENTS.forEach(s=>{
+    const li = document.createElement('li');
+    li.innerHTML = `<b>${s.label}</b>`;
+    list.appendChild(li);
+  });
+}
+  function openModal(){ modal.classList.add('open'); }
+  function closeModal(){ modal.classList.remove('open'); }
+  modalOk.addEventListener('click', closeModal);
+
+  // toast via modal
+  function notify(html){
+    modalTitle.textContent = 'Info';
+    modalBody.innerHTML = html;
+    openModal();
+  }
+
+  // n° de commande (démo client)
+  function genOrderNo(){
+    const now = new Date();
+    const y = now.getFullYear();
+    const m = String(now.getMonth()+1).padStart(2,'0');
+    const d = String(now.getDate()).padStart(2,'0');
+    const seq = Number(localStorage.getItem('zlw_order_seq')||'1000') + 1;
+    localStorage.setItem('zlw_order_seq', String(seq));
+    return `ZLW-${y}${m}${d}-${seq}`;
+  }
+  function recordPaidTicket(orderNo){
+    try{
+      const arr = JSON.parse(localStorage.getItem('zlw_paid_orders')||'[]');
+      arr.unshift({ orderNo, ts: Date.now() });
+      localStorage.setItem('zlw_paid_orders', JSON.stringify(arr.slice(0,100)));
+    }catch(e){}
+  }
+
+  // Overlay visuel
+  function paintFoil(){
+    const w=canvas.width/dpr, h=canvas.height/dpr;
+    const g=ctx.createLinearGradient(0,0,w,h);
+    g.addColorStop(0,'#b9bcc6'); g.addColorStop(.25,'#8b8e99'); g.addColorStop(.5,'#cfd2db'); g.addColorStop(.75,'#8b8e99'); g.addColorStop(1,'#b9bcc6');
+    ctx.globalCompositeOperation='source-over';
+    ctx.fillStyle=g; ctx.fillRect(0,0,w,h);
+    ctx.fillStyle='rgba(255,255,255,.12)';
+    for(let i=0;i<16;i++){ const x=Math.random()*w,y=Math.random()*h,r=10+Math.random()*30; ctx.beginPath(); ctx.arc(x,y,r,0,Math.PI*2); ctx.fill(); }
+    // "Grattez ici" plus visible (contour + ombre)
+    ctx.font='900 30px system-ui,-apple-system,Segoe UI,Roboto,sans-serif';
+    ctx.textAlign='center'; ctx.textBaseline='middle';
+    ctx.fillStyle='#ffffff';
+    ctx.strokeStyle='rgba(0,0,0,.75)'; ctx.lineWidth=4; ctx.lineJoin='round'; ctx.miterLimit=2;
+    ctx.strokeText('Grattez ici', w/2, h/2);
+    ctx.fillText('Grattez ici', w/2, h/2);
+  }
+
+  // Tirage pondéré
+  function pickIndex(){
+    const total = SEGMENTS.reduce((s,a)=>s+a.weight,0);
+    let r = Math.random()*total;
+    for(let i=0;i<SEGMENTS.length;i++){ r -= SEGMENTS[i].weight; if(r<=0) return i; }
+    return SEGMENTS.length-1;
+  }
+  function prizeLabel(p){
+    switch(p.type){
+      case 'giftcard': return `Carte cadeau ${p.value} €`;
+      case 'psn':      return `Carte PSN ${p.value} €`;
+      case 'xbox':     return `Carte Xbox ${p.value} €`;
+      case 'merch':    return `Porte-clé Ziilow`;
+      case 'game':     return `Black Ops 7`;
+      case 'console':  return `PLAYSTATION 5`;
+      default:         return p.label;
+    }
+  }
+  function setPrize(p){
+    currentPrize = p;
+    prizeText.innerHTML = p.type==='lose'
+      ? 'Dommage…<br><b>Reviens demain</b>'
+      : 'Tu as gagné<br><b>'+prizeLabel(p)+'</b>';
+  }
+
+  function newTicket(){
+    scratched=false;
+    setPrize({type:'none',label:''});
+    prizeText.innerHTML='Gratte pour révéler<br><b>ton gain</b>';
+    paintFoil();
+  }
+
+  // STRICT : il faut un n° de commande pour jouer
+  function startRound(){
+    if(eligible<=0) return;
+
+    if(paidOrderQueue.length === 0){
+      notify('Ce ticket doit être payé. Cliquez sur <b>💳 Payer</b> ou utilisez un <b>🎁 Code</b>.');
+      return;
+    }
+
+    // associe le n° de commande à ce tirage
+    currentOrderNo = paidOrderQueue.shift();
+
+    revealedThisRound = false;
+    scratched = false;
+
+    eligible--; updateUI();
+    setPrize(SEGMENTS[pickIndex()]);
+    paintFoil();
+  }
+
+  // Grattage instantané
+  canvas.addEventListener('pointerdown', (e)=>{
+    e.preventDefault();
+    if(!currentPrize || currentPrize.type==='none' || revealedThisRound) return;
+    const w = canvas.width / dpr, h = canvas.height / dpr;
+    ctx.globalCompositeOperation = 'destination-out';
+    ctx.fillRect(0, 0, w, h);
+    revealedThisRound = true;
+    scratched = true;
+    reveal();
+  }, {passive:false});
+
+  // Révélation
+  function reveal(){
+    if(DEMO_MODE){
+      showResult(currentPrize,{demo:true});
+    }else{
+      fetch('/api/reward/redeem',{
+        method:'POST', headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({prize:currentPrize})
+      }).then(r=>r.json().then(d=>({ok:r.ok,d}))).then(({ok,d})=>{
+        if(!ok) throw new Error(d?.error||'Erreur serveur');
+        showResult(currentPrize,d);
+      }).catch(err=>{
+        modalTitle.textContent='Oups...';
+        modalBody.innerHTML=`<span style="color:#ff5d5d">${err.message||String(err)}</span>`;
+        openModal();
+      });
+    }
+  }
+
+  // Popup résultat (capture + n° commande)
+  function showResult(p,data){
+    modalTitle.textContent = (p.type==='lose') ? 'À une case près !' : 'Résultat';
+    let detail='';
+    switch(p.type){
+      case 'giftcard': detail=`🎉 <b>Carte cadeau ${p.value} €</b> gagnée !`; break;
+      case 'psn':      detail=`🎮 <b>Carte PSN ${p.value} €</b> gagnée !`; break;
+      case 'xbox':     detail=`🎮 <b>Carte Xbox ${p.value} €</b> gagnée !`; break;
+      case 'merch':    detail=`🧸 <b>Porte-Clé Ziilow</b> gagné !`; break;
+      case 'game':     detail=`🕹️ <b>Black Ops 7</b> gagné !`; break;
+      case 'console':  detail=`🚀 <b>PLAYSTATION 5</b> GAGNÉE ! (vérification requise)`; break;
+      case 'lose':     detail=`Dommage… rien cette fois. <b>Reviens demain</b>.`; break;
+      default:         detail=`Récompense : <b>${p.label}</b>`;
+    }
+
+    const orderLine = (p.type!=='lose' && currentOrderNo)
+      ? `<div class="muted" style="margin-top:6px">N° de commande : <b>${currentOrderNo}</b></div>`
+      : '';
+
+    const howto = (p.type!=='lose') ? `
+      <div style="margin-top:10px" class="muted">
+        📸 <b>Capture d’écran obligatoire :</b> gardez une image claire de ce résultat.<br>
+        🧾 <b>Ensuite, donnez votre numéro de commande</b> sur notre
+        <a href="https://discord.gg/XHQebk4SwQ" target="_blank" rel="noopener" style="color:#8bc7ff">Discord</a>
+        pour que l’équipe puisse <b>vérifier et valider</b> votre gain.
+        <br><span style="font-size:.9em;opacity:.85">Sans numéro de commande payé valide, le gain ne peut pas être validé.</span>
+      </div>` : '';
+
+    modalBody.innerHTML = `${detail}${orderLine}${howto}`;
+    openModal();
+  }
+
+/* =======================
+   Codes à usage unique
+   ======================= */
+const CODE_SALT = 'ZLW_CODE_SALT_2025'; // tu peux changer ce sel quand tu veux
+
+const PREPAID_CODES = [
+  // — EXISTANTS —
+  'ZLW-UGA2-O2C2-92UM','ZLW-Y1S8-91BO-GS9B','ZLW-PUQ0-KSGS-0RQP','ZLW-Q2P6-DNY3-XPKX','ZLW-2R6W-LT8F-NP9Z',
+  'ZLW-LNEE-WHBH-G1Y9','ZLW-BZV0-8KCO-8E50','ZLW-SB0F-7H4X-T2NT','ZLW-WZ7B-MFXH-BY7K','ZLW-26K5-7NAW-IIU3',
+  'ZLW-QB56-BQ9B-RFUW','ZLW-HDRY-NJWZ-8S4J','ZLW-ANQM-5T11-6RH0','ZLW-15QX-ZVA6-DGRG','ZLW-O99U-7H5D-RASN',
+  'ZLW-ZVIL-WBL3-7SWO','ZLW-CB05-5Y62-WUNO','ZLW-PBMS-I2J5-G5ZM','ZLW-4K6C-7Z7W-HEIJ','ZLW-8GBH-997L-BPNR',
+  'ZLW-OM7I-VE27-1LEZ','ZLW-M3XF-H6EF-XW8H','ZLW-24S0-HI11-WY8X','ZLW-0TP4-7GB1-8LR8','ZLW-97LO-K5BG-1XCN',
+  'ZLW-AZD3-3TKE-UWUL','ZLW-C8SX-Y2Z4-C7JP','ZLW-FUJW-5G6H-DZW2','ZLW-SYVD-NXCA-V794','ZLW-AVJU-8FWA-5CG2',
+
+  // — NOUVELLE SÉRIE —
+  'ZLW-8JDK-4QWP-9VMT','ZLW-3YHN-7XQL-5ZRC','ZLW-6MTP-9VHQ-4YWL','ZLW-2KVR-8ZQM-7HXP','ZLW-9XWT-3VYM-5QHL',
+  'ZLW-5ZPQ-6WXT-8HMR','ZLW-4WYM-7KZT-2VHQ','ZLW-8HXL-9QWR-3VTP','ZLW-6VQJ-5MYP-4ZTW','ZLW-7ZMC-3VHL-9WQP',
+  'ZLW-9WQR-4HYM-2XVT','ZLW-8VYL-5QZM-7WHT','ZLW-2MHC-9XWL-3VQY','ZLW-5XWT-8QVL-4ZHM','ZLW-7QYP-2VHM-9WZX',
+  'ZLW-4VWR-5ZQL-8XTM','ZLW-6ZHT-3WQM-7VYP','ZLW-9VHP-8ZWM-2QXL','ZLW-3WYZ-4XVL-5HQT','ZLW-8QTP-6WZM-7VYR',
+  'ZLW-2ZVL-5QWM-9HXT','ZLW-7WQT-3VYM-8ZHP','ZLW-9YXL-4WQM-2VZT','ZLW-5QWM-7ZHP-8VYR','ZLW-4VTL-3WZX-9QHM',
+  'ZLW-8ZQP-2HVM-6WYT','ZLW-7WXL-9QTP-3VZH','ZLW-5HQT-8WZM-4VYR','ZLW-6ZWM-3VYP-9QXT','ZLW-9WHP-2QZT-7VXL',
+  'ZLW-4YQM-8VZT-6WHP','ZLW-7ZTL-5QWM-3VYX','ZLW-6WQM-9HYP-8ZVT','ZLW-3VQT-2ZWM-5WYL','ZLW-9XWM-8QYT-7VZH',
+  'ZLW-2HWM-4VQT-5ZYP','ZLW-7QWL-8XVT-6ZHM','ZLW-5ZQM-9WYT-3VXL','ZLW-8VWL-2HQT-4ZYM','ZLW-6XVT-7QWM-9ZHP',
+  'ZLW-4QYM-3VWT-8ZHL','ZLW-9VQL-6WXT-2ZYM','ZLW-7ZWM-8VQT-4XYP','ZLW-5WXM-9HQT-6ZVL','ZLW-8ZYM-2QVT-3WHL',
+  'ZLW-4VQT-6ZWM-5YXP','ZLW-9WXL-8QYM-7VZT','ZLW-3VZM-5WXT-4QYL','ZLW-6WQT-2VHM-9ZYP'
+];
+
+  let PREPAID_CODE_HASHES = []; // sera rempli au chargement
+
+  function toHex(buf){ return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join(''); }
+  async function sha256HexLocal(str){
+    const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(str));
+    return toHex(buf);
+  }
+  async function hashCodePlain(plain){
+    return sha256HexLocal((plain||'').trim().toUpperCase() + '::' + CODE_SALT);
+  }
+
+  function loadUsedHashes(){ try{ return JSON.parse(localStorage.getItem('zlw_used_codes')||'[]'); }catch{return []; } }
+  function saveUsedHashes(a){ localStorage.setItem('zlw_used_codes', JSON.stringify(a)); }
+  function isAvailableHash(h){
+    const used = new Set(loadUsedHashes());
+    return PREPAID_CODE_HASHES.includes(h) && !used.has(h);
+  }
+  function markUsedHash(h){
+    const arr = loadUsedHashes();
+    if(!arr.includes(h)){ arr.push(h); saveUsedHashes(arr); }
+  }
+  // utilitaire admin: window.zlwHashCodes(['CODE1','CODE2',...]) -> hashes en console
+  window.zlwHashCodes = async (codes)=>{ const out=[]; for(const c of codes){ out.push(await hashCodePlain(c)); } console.log(JSON.stringify(out)); return out; };
+
+  async function initCodeWhitelist(){
+    PREPAID_CODE_HASHES = [];
+    for(const code of PREPAID_CODES){
+      PREPAID_CODE_HASHES.push(await hashCodePlain(code));
+    }
+  }
+
+  // Boutons
+  btnStart.addEventListener('click', ()=>{ if(eligible<=0) return; newTicket(); startRound(); });
+
+  // 💳 Payer => ouvre PayPal, n'accorde AUCUN tirage automatiquement
+  btnPay.addEventListener('click', ()=>{
+    window.open(PAYPAL_LINK, '_blank', 'noopener,noreferrer');
+    notify(
+      'Après le paiement, viens sur <a href="https://discord.gg/XHQebk4SwQ" target="_blank" rel="noopener">Discord</a> ' +
+      'pour recevoir un <b>code à usage unique</b>. ' +
+      'Entre ensuite ce code via <b>🎁 Code</b> pour activer 1 tirage.'
+    );
+  });
+
+  // 🎁 Code à usage unique => +1 tirage + n° de commande
+  btnCode.addEventListener('click', async ()=>{
+    const raw = prompt('Entrez votre code :');
+    if(!raw) return;
+    const h = await hashCodePlain(raw);
+    if(!isAvailableHash(h)){
+      notify('<span style="color:#ff7b7b">Code invalide ou déjà utilisé.</span>');
+      return;
+    }
+    // valide -> on consomme
+    markUsedHash(h);
+    const orderNo = genOrderNo();
+    paidOrderQueue.push(orderNo);
+    recordPaidTicket(orderNo);
+    eligible++; updateUI();
+    notify(`Code accepté.<br>🧾 N° de commande : <b>${orderNo}</b><br><span class="muted">Il sera utilisé sur votre prochain ticket.</span>`);
+  });
+
+  // Init
+  (async ()=>{
+    await initCodeWhitelist();   // prépare la whitelist hashée
+    renderLots(); updateUI(); paintFoil();
+  })();
+})();
+</script>
+<!-- ====== /TICKET À GRATTER ====== -->
+
 </section>
 
 <!-- ===== CONTACT ===== -->
@@ -918,7 +1319,7 @@ ajouterAvis("Lucas","Très bonne boutique, les produits sont de qualité.",4);
 </section>
 
 <!-- ===== POPUP Login / Register ===== -->
-<div id="loginBackdrop" class="modal-backdrop" onclick="hideLoginPopup()"></div>
+<div id="loginBackdrop" class="modal-backdrop" onclick="hideLoginPopup"></div>
 <div id="loginPopup">
   <span class="close-btn" onclick="hideLoginPopup()">×</span>
 
@@ -986,17 +1387,6 @@ ajouterAvis("Lucas","Très bonne boutique, les produits sont de qualité.",4);
 </body>
 </html>
 
-
-
-
-
-
-
-
-
-
-
-
 <!-- Fond image plein écran -->
 <div style="
   position:fixed; 
@@ -1008,9 +1398,3 @@ ajouterAvis("Lucas","Très bonne boutique, les produits sont de qualité.",4);
   z-index:-1;">
 </div>
 <div style="position:relative; z-index:1; color:white; text-align:center; padding-top:50px;">
-
-
-
-
-
-
