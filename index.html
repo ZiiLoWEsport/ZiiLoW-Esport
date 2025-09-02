@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>ZiiLoW Esport</title>
 
-
   <style>
 /* --------- Modal form (laissé tel quel) --------- */
 #modalForm{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.5);z-index:1000;font-family:Arial, sans-serif}
@@ -571,47 +570,16 @@ window.addEventListener('load', ()=>{
 </video>
 
 <header>
-
-
-
-
-
-
-
-<header class="topbar">
-  <!-- Logo + titre (gauche) -->
-  <a class="brand" href="/">
-    <img src="https://i.postimg.cc/rm9YV6c2/IMG-9367.png" alt="ZiiLoW" />
-    <span>ZiiLoW Esport</span>
-  </a>
-
-  <!-- Menu (centre) -->
-  <nav class="mainnav">
-    <a href="#">À propos</a>
-    <a href="#">Boutique</a>
-    <a href="#">Contact</a>
-    <a href="#">Nos réseaux</a>
-    <a href="#">Partenariats</a>
-    <a href="#">Recrutement</a>
-    <a href="#">Avis client</a>
-  </nav>
-
-  <!-- Droite (si tu as l’avatar/compte) -->
-  <div class="rightslot">
-    <!-- mets ici ton bouton/compte si tu en as un -->
-  </div>
-</header>
-
-
-
-
-
-
-
-
-
-
-
+  <nav>
+    <div class="nav-links">
+      <a href="#" onclick="showSection('apropos', this); return false;">À propos</a>
+      <a href="#" onclick="showSection('boutique', this); return false;">Boutique</a>
+      <a href="#" onclick="showSection('contact', this); return false;">Contact</a>
+      <a href="#" onclick="showSection('reseaux', this); return false;">Nos réseaux</a>
+      <a href="#" onclick="showSection('partenariats', this); return false;">Partenariats</a>
+      <a href="#" onclick="showSection('recrutement', this); return false;">Recrutement</a>
+      <a href="#" onclick="showSection('avis', this); return false;">Avis client</a>
+    </div>
 
     <!-- À droite : bouton Se connecter OU avatar + pseudo -->
     <span id="authBtnContainer" style="display:flex;align-items:center;gap:10px">
@@ -1423,22 +1391,10 @@ ajouterAvis("Lucas","Très bonne boutique, les produits sont de qualité.",4);
 <div style="
   position:fixed; 
   inset:0; 
-  background-image:url('https://i.postimg.cc/52p0wPvh/logo-scene-dark-center.png'); 
+  background-image:url('https://media.discordapp.net/attachments/816946929417846804/1404864932922527754/logo_scene_dark_center.png?ex=689cbded&is=689b6c6d&hm=3e445dbcfa518efb419db6d83194fa01dacba8bcd3dc3b45ca79946cbc119509&=&format=webp&quality=lossless&width=1392&height=928'); 
   background-size:cover; 
   background-position:center; 
   background-repeat:no-repeat; 
   z-index:-1;">
 </div>
 <div style="position:relative; z-index:1; color:white; text-align:center; padding-top:50px;">
-
-
-
-
-
-
-
-
-
-
-
-
