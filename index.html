@@ -578,19 +578,40 @@ window.addEventListener('load', ()=>{
 
 
 
+<header class="topbar">
+  <!-- Logo + titre (gauche) -->
+  <a class="brand" href="/">
+    <img src="https://i.postimg.cc/rm9YV6c2/IMG-9367.png" alt="ZiiLoW" />
+    <span>ZiiLoW Esport</span>
+  </a>
+
+  <!-- Menu (centre) -->
+  <nav class="mainnav">
+    <a href="#">À propos</a>
+    <a href="#">Boutique</a>
+    <a href="#">Contact</a>
+    <a href="#">Nos réseaux</a>
+    <a href="#">Partenariats</a>
+    <a href="#">Recrutement</a>
+    <a href="#">Avis client</a>
+  </nav>
+
+  <!-- Droite (si tu as l’avatar/compte) -->
+  <div class="rightslot">
+    <!-- mets ici ton bouton/compte si tu en as un -->
+  </div>
+</header>
 
 
 
-  <nav>
-    <div class="nav-links">
-      <a href="#" onclick="showSection('apropos', this); return false;">À propos</a>
-      <a href="#" onclick="showSection('boutique', this); return false;">Boutique</a>
-      <a href="#" onclick="showSection('contact', this); return false;">Contact</a>
-      <a href="#" onclick="showSection('reseaux', this); return false;">Nos réseaux</a>
-      <a href="#" onclick="showSection('partenariats', this); return false;">Partenariats</a>
-      <a href="#" onclick="showSection('recrutement', this); return false;">Recrutement</a>
-      <a href="#" onclick="showSection('avis', this); return false;">Avis client</a>
-    </div>
+
+
+
+
+
+
+
+
 
     <!-- À droite : bouton Se connecter OU avatar + pseudo -->
     <span id="authBtnContainer" style="display:flex;align-items:center;gap:10px">
@@ -1409,6 +1430,7 @@ ajouterAvis("Lucas","Très bonne boutique, les produits sont de qualité.",4);
   z-index:-1;">
 </div>
 <div style="position:relative; z-index:1; color:white; text-align:center; padding-top:50px;">
+
 
 
 
