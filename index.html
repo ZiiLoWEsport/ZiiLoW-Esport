@@ -571,12 +571,6 @@ window.addEventListener('load', ()=>{
 </head>
 <body>
 
-<video autoplay muted loop playsinline id="bg-video">
-  <source src="src="https://www.youtube-nocookie.com/embed/9BWweweAqFw"
-" type="video/mp4">
-  Votre navigateur ne supporte pas la vidéo HTML5.
-</video>
-
 <header>
   <nav>
     <div class="nav-links">
@@ -587,6 +581,7 @@ window.addEventListener('load', ()=>{
       <a href="#" onclick="showSection('partenariats', this); return false;">Partenariats</a>
       <a href="#" onclick="showSection('recrutement', this); return false;">Recrutement</a>
       <a href="#" onclick="showSection('avis', this); return false;">Avis client</a>
+      <a href="#" onclick="showSection('faq', this); return false;">FAQ</a>
     </div>
 
     <!-- À droite : bouton Se connecter OU avatar + pseudo -->
@@ -1408,3 +1403,112 @@ ajouterAvis("Lucas","Très bonne boutique, les produits sont de qualité.",4);
 <div style="position:relative; z-index:1; color:white; text-align:center; padding-top:50px;">
 
 
+
+
+<!-- ===== FAQ (section dédiée) ===== -->
+<section id="faq">
+  <div class="faq-container">
+    <h2 class="faq-title">FAQ – Retours & Paiements</h2>
+    <p class="faq-sub">Toutes les réponses pour commander en confiance sur ZiiloW Esport.</p>
+
+    <h3 class="faq-section">Retours d'articles</h3>
+    <div class="faq-list">
+      <details class="faq-item">
+        <summary><span>Quels articles sont éligibles au retour ?</span><span class="faq-chevron">▾</span></summary>
+        <div class="faq-answer">
+          Les articles <strong>non portés et non lavés</strong> avec étiquettes et emballage d’origine sont éligibles.
+          Les articles <strong>personnalisés</strong> ne sont pas retournables (sauf défaut avéré).
+        </div>
+      </details>
+
+      <details class="faq-item">
+        <summary><span>Délai de retour</span><span class="faq-badge">14 jours</span><span class="faq-chevron">▾</span></summary>
+        <div class="faq-answer">
+          Vous avez <strong>14 jours calendaires</strong> après la livraison. Contactez-nous avant tout envoi.
+        </div>
+      </details>
+
+      <details class="faq-item">
+        <summary><span>Frais de retour</span><span class="faq-chevron">▾</span></summary>
+        <div class="faq-answer">
+          Hors défaut/erreur de notre part, les <strong>frais de retour</strong> sont à la charge du client.
+        </div>
+      </details>
+    </div>
+
+    <h3 class="faq-section">Paiements</h3>
+    <div class="faq-list">
+      <details class="faq-item">
+        <summary><span>Moyens de paiement</span><span class="faq-chevron">▾</span></summary>
+        <div class="faq-answer">
+          <strong>PayPal</strong> et <strong>cartes bancaires</strong> (Visa, MasterCard, etc.) via PayPal.
+        </div>
+      </details>
+
+      <details class="faq-item">
+        <summary><span>Payer sans compte PayPal ?</span><span class="faq-chevron">▾</span></summary>
+        <div class="faq-answer">
+          Oui : cliquez sur <strong>« Payer par carte »</strong> sur l’interface PayPal (mode invité).
+        </div>
+      </details>
+
+      <details class="faq-item">
+        <summary><span>Problème de paiement</span><span class="faq-chevron">▾</span></summary>
+        <div class="faq-answer">
+          Vérifiez le plafond + <strong>3-D Secure</strong>, réessayez, sinon contactez votre banque puis notre
+          <a href="#" onclick="showSection('contact'); return false;">support</a>.
+        </div>
+      </details>
+    </div>
+  </div>
+</section>
+
+<style>
+  /* Styles FAQ isolés */
+  .faq-container{max-width:960px;margin:0 auto;padding:24px 16px}
+  .faq-title{font-size:clamp(24px,2vw+16px,36px);font-weight:800;margin:0 0 8px}
+  .faq-sub{margin:0 0 24px;opacity:.85}
+  .faq-section{font-size:20px;margin:28px 0 12px;font-weight:700}
+  .faq-list{display:grid;gap:10px}
+  .faq-item{border:1px solid rgba(255,255,255,.15);border-radius:14px;padding:2px 10px;background:rgba(255,255,255,.03)}
+  .faq-item[open]{border-color:rgba(88,101,242,.45);box-shadow:0 0 0 3px rgba(88,101,242,.15)}
+  .faq-item summary{cursor:pointer;list-style:none;display:grid;grid-template-columns:1fr auto;align-items:center;gap:8px;padding:12px 4px}
+  .faq-item summary::-webkit-details-marker{display:none}
+  .faq-answer{padding:0 0 12px;opacity:.95}
+  .faq-badge{font-size:12px;border:1px solid rgba(255,255,255,.18);border-radius:999px;padding:2px 8px}
+  .faq-chevron{transition:transform .18s ease}
+  .faq-item[open] .faq-chevron{transform:rotate(180deg)}
+
+
+  /* Container avec fond translucide */
+.faq-container {
+  background: rgba(0, 0, 0, 0.6); /* noir translucide */
+  border-radius: 16px;
+  padding: 32px 24px;
+  backdrop-filter: blur(6px); /* floute légèrement l’image derrière */
+}
+
+/* Améliorer la lisibilité du texte */
+.faq-title, .faq-section {
+  color: #fff;
+  border-bottom: 1px solid rgba(255,255,255,0.2);
+  padding-bottom: 6px;
+}
+
+.faq-sub {
+  color: #ccc;
+}
+
+/* Les blocs déroulants */
+.faq-item {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.faq-item[open] {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: #5865f2;
+}
+
+</style>
+<!-- ===== /FAQ ===== -->
